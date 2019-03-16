@@ -1,5 +1,6 @@
 package gatsko.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Tag {
     @Column(length = 30, nullable = false, unique = true)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Collection<Article> articles = new ArrayList<>();
 }

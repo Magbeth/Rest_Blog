@@ -25,9 +25,9 @@ public class ArticlesController {
     private ArticleRepository articleRepository;
 
     @GetMapping(value = "/article/{articleId}")
-    public String showArticle(@PathVariable("articleId") Long articleId) {
+    public Article showArticle(@PathVariable("articleId") Long articleId) {
         Article article = articleService.getArticle(articleId);
-        return article.toString();
+        return article;
     }
 
     @GetMapping(value = {"/articles"})

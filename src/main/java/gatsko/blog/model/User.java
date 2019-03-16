@@ -1,5 +1,6 @@
 package gatsko.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -68,6 +69,7 @@ public class User {
     @Column(nullable = false)
     private String created_at;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Article> articles = new ArrayList<>();
 }
