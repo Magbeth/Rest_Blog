@@ -20,4 +20,6 @@ public interface ArticleService {
 //
     void deleteArticle(Long articleId);
 
+    Article updateArticle(Article article);
+
 }

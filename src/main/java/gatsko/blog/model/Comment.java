@@ -1,28 +1,26 @@
 package gatsko.blog.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"article", "user"})
 @Builder
 @Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue
-    private Long Id;
+    private UUID id;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "text", nullable = false)
     @NotBlank
     private String commentText;
 

@@ -1,7 +1,6 @@
 package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
-import gatsko.blog.model.User;
 import gatsko.blog.repository.ArticleRepository;
 import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.UserService;
@@ -32,7 +31,7 @@ public class ArticlesController {
     }
 
     @GetMapping(value = {"/articles"})
-    public String getArticlesList() {
+    public String getPublicArticlesList() {
         List<Article> articles = articleRepository.findAll();
         return articles.toString();
     }
@@ -64,5 +63,11 @@ public class ArticlesController {
         return articles.toString();
     }
 
+    @PutMapping(value = {"article/{articleId}/update"})
+    public String editArticle(Article editedArticle, @PathVariable("articleId") Long articleId) {
+        editedArticle.setId(articleId);
+        articleService.updateArticle(editedArticle);
+        return "ok";
 
+    }
 }

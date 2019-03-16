@@ -28,6 +28,7 @@ public class Article {
     @Column(name = "full_text", nullable = false)
     private String fullPostText;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 

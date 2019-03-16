@@ -64,4 +64,15 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.flush();
     }
 
+    @Override
+    public Article updateArticle(Article editedArticle) {
+        Article article = articleRepository.findOne(editedArticle.getId());
+        article.setFullPostText(editedArticle.getFullPostText());
+        article.setTitle(editedArticle.getTitle());
+        article.setDateTime(LocalDateTime.now());
+        article.setStatus(editedArticle.getStatus());
+        articleRepository.saveAndFlush(article);
+        return article;
+    }
+
 }
