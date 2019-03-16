@@ -25,18 +25,15 @@ public class ArticlesController {
     @Autowired
     private ArticleRepository articleRepository;
 
-
-
     @GetMapping(value = "/article/{articleId}")
     public String showArticle(@PathVariable("articleId") Long articleId) {
         Article article = articleService.getArticle(articleId);
         return article.toString();
     }
 
-    @GetMapping(value = {"/posts"})
-    public String getPostsList() {
+    @GetMapping(value = {"/articles"})
+    public String getArticlesList() {
         List<Article> articles = articleRepository.findAll();
-
         return articles.toString();
     }
 
@@ -48,13 +45,23 @@ public class ArticlesController {
 
     @RequestMapping(value = "/articles", method = RequestMethod.GET, params = {"tagged"})
     public String searchByTag(@RequestParam("tagged") String tagsStr, @RequestParam(value = "page", defaultValue = "0") Integer pageNumber
-                             ) {
+    ) {
         List<String> tagNames = Arrays.stream(tagsStr.split(",")).map(String::trim).distinct().collect(Collectors.toList());
-
         Page<Article> postsPage = articleService.findArticleByTag(tagNames, pageNumber, 10);
-
-
         return postsPage.getContent().toString();
+    }
+
+    @DeleteMapping(value = "article/{articleId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteArticle(@PathVariable("articleId") Long articleId) {
+        articleService.deleteArticle(articleId);
+        return "ok";
+    }
+
+    @GetMapping(value = {"/{username}/articles"})
+    public String getUserArticlesList(@PathVariable("username") String username) {
+        List<Article> articles = articleRepository.findAllByUser_Username(username);
+        return articles.toString();
     }
 
 

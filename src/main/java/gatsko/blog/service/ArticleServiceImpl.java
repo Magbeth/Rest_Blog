@@ -29,8 +29,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<Article> getArticlesPage(int pageNumber, int pageSize) {
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize, Sort.Direction.DESC, "dateTime");
-
-
         return articleRepository.findAll(pageRequest);
     }
 
@@ -41,14 +39,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
-
     @Override
     public Page<Article> findArticleByTag(List<String> tags, int pageNumber, int pageSize) {
         tags = tags.stream().map(String::toLowerCase).collect(Collectors.toList());
-
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize, Sort.Direction.DESC, "dateTime");
-
-
         return articleRepository.findByTags(tags, pageRequest);
     }
 
@@ -58,6 +52,16 @@ public class ArticleServiceImpl implements ArticleService {
         article.setUser(userService.currentUser());
         articleRepository.saveAndFlush(article);
         return article;
+    }
+
+    @Override
+    public void deleteArticle(Long articleId) {
+//        Article article = getArticle(articleId);
+//        if (article.getUser().equals(userService.currentUser())) {
+//
+//        }
+        articleRepository.delete(articleId);
+        articleRepository.flush();
     }
 
 }

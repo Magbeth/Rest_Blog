@@ -17,8 +17,9 @@ import java.util.List;
 @Entity
 @Table(name = "articles")
 public class Article {
+    enum Status {PUBLIC, DRAFT}
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column(length = 250, nullable = false)
@@ -27,10 +28,13 @@ public class Article {
     @Column(name = "full_text", nullable = false)
     private String fullPostText;
 
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "articles_tags",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))

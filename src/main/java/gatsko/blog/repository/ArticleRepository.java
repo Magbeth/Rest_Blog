@@ -18,4 +18,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("SELECT a2 FROM Article a2 JOIN a2.tags t WHERE LOWER(t.name) in (:tags)")
     Page<Article> findByTags(@Param("tags") Collection<String> tags, Pageable pageable);
 
+
+
 }

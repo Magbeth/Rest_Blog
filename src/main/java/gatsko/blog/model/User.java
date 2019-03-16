@@ -19,16 +19,23 @@ import java.util.List;
 @Entity
 @Table(name = "blog_user")
 public class User {
-    public interface CreateValidationGroup {}
-    public interface ChangeEmailValidationGroup {}
-    public interface ChangePasswordValidationGroup {}
-    public interface ProfileInfoValidationGroup {}
+    public interface CreateValidationGroup {
+    }
+
+    public interface ChangeEmailValidationGroup {
+    }
+
+    public interface ChangePasswordValidationGroup {
+    }
+
+    public interface ProfileInfoValidationGroup {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     @Size.List({
             @Size(min = 3, message = "Username too short", groups = {CreateValidationGroup.class}),
             @Size(max = 25, message = "Username too long", groups = {CreateValidationGroup.class})
@@ -52,7 +59,7 @@ public class User {
     @NotBlank(groups = {CreateValidationGroup.class, ChangePasswordValidationGroup.class})
     private String password;
 
-    @Column (unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     @Email(groups = {CreateValidationGroup.class, ChangeEmailValidationGroup.class})
     @NotBlank(groups = {CreateValidationGroup.class, ChangeEmailValidationGroup.class})
     private String email;
@@ -65,11 +72,4 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Article> articles = new ArrayList<>();
-
-//    public static User from(UserForm form) {
-//        return User.builder()
-//                .firstName(form.getFirstName())
-//                .lastName(form.getLastName())
-//                .build();
-//    }
 }
