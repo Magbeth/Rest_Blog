@@ -100,6 +100,6 @@ public class ArticlesController {
     @GetMapping(value ="tag-cloud", params = {"tagName"})
     public String getArticlesWithTagCount(@RequestParam("tagName") String tagName) {
         Long count = articleRepository.findArticleCountByTag(tagName);
-        return "{tag : " + tagName + ", article_count : "+ count + "}";
+        return tagName + " " + count;
     }
 }

@@ -19,7 +19,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findByTags(@Param("tags") Collection<String> tags, Pageable pageable);
 
 //    List<Article> findAllByStatus();
-    @Query("Select count(a) from Article a JOIN a.tags t WHERE lower(t.name) = :tagName")
+    @Query("Select count(a) from Article a JOIN a.tags t WHERE LOWER(t.name) = lower(:tagName)")
     Long findArticleCountByTag(@Param("tagName") String tagName);
-
 }

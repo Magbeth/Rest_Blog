@@ -32,13 +32,13 @@ public class CommentsController {
     }
 
     @GetMapping(value = {"/articles/{articleId}/comments"})
-    public List<Comment> getUserArticlesList(@PathVariable("articleId") Long articleId) {
+    public List<Comment> getUserCommentsList(@PathVariable("articleId") Long articleId) {
         List<Comment> comments = commentRepository.findAllByArticle_Id(articleId);
         return comments;
     }
 
     @GetMapping(value = "/articles/{articleId}/comments/{commentId}")
-    public Comment showArticle(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
+    public Comment showComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
         Comment comment = commentService.getComment(commentId);
         return comment;
     }
