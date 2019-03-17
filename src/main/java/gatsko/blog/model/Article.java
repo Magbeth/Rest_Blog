@@ -1,6 +1,8 @@
 package gatsko.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class Article {
     @Column(name = "status", nullable = false)
     private Status status;
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
