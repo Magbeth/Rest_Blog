@@ -1,12 +1,17 @@
 package gatsko.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gatsko.blog.utils.JsonDateDeserializer;
+import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +71,10 @@ public class User {
     @Column(nullable = false)
     private boolean enabled;
 
-    @Column(nullable = false)
-    private String created_at;
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")

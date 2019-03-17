@@ -1,12 +1,16 @@
 package gatsko.blog.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gatsko.blog.utils.JsonDateDeserializer;
+import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -18,19 +22,23 @@ import java.util.UUID;
 public class Comment {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Long id;
 
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(name = "message", columnDefinition = "text", nullable = false)
     @NotBlank
     private String commentText;
 
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;

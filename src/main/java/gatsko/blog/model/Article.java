@@ -1,7 +1,10 @@
 package gatsko.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gatsko.blog.utils.JsonDateDeserializer;
 import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 
@@ -18,6 +21,7 @@ import java.util.List;
 @ToString(exclude = "user")
 @Entity
 @Table(name = "articles")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Article {
     enum Status {PUBLIC, DRAFT}
     @Id
@@ -27,7 +31,7 @@ public class Article {
     @Column(length = 250, nullable = false)
     private String title;
 
-    @Column(name = "full_text", nullable = false)
+    @Column(name = "full_text", columnDefinition = "text", nullable = false)
     private String fullPostText;
 
     @Enumerated(EnumType.STRING)
@@ -35,8 +39,14 @@ public class Article {
     private Status status;
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "articles_tags",
@@ -48,11 +58,11 @@ public class Article {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
     @org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
-    @OrderBy("dateTime ASC")
+    @OrderBy("createdAt ASC")
     private List<Comment> comments = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "author_id")
     private User user;
 }

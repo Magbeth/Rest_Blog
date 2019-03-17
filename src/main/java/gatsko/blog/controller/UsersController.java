@@ -14,8 +14,8 @@ public class UsersController {
     private UsersRepository usersRepository;
 
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public String getUsersByFirstName(@RequestParam(name = "first_name") String firstName) {
+    public List<User> getUsersByFirstName(@RequestParam(name = "first_name") String firstName) {
         List<User> users = usersRepository.findAllByFirstName(firstName);
-        return users.toString();
+        return users;
     }
 }

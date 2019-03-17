@@ -24,33 +24,33 @@ public class ArticlesController {
     @Autowired
     private ArticleRepository articleRepository;
 
-    @GetMapping(value = "/article/{articleId}")
+    @GetMapping(value = "/articles/{articleId}")
     public Article showArticle(@PathVariable("articleId") Long articleId) {
         Article article = articleService.getArticle(articleId);
         return article;
     }
 
     @GetMapping(value = {"/articles"})
-    public String getPublicArticlesList() {
+    public List<Article> getPublicArticlesList() {
         List<Article> articles = articleRepository.findAll();
-        return articles.toString();
+        return articles;
     }
 
-    @PostMapping(value = "/article/create")
+    @PostMapping(value = "/articles")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createArticle(Article article) {
-        return articleService.saveNewArticle(article).toString();
+    public Article createArticle(Article article) {
+        return articleService.saveNewArticle(article);
     }
 
     @RequestMapping(value = "/articles", method = RequestMethod.GET, params = {"tagged"})
-    public String searchByTag(@RequestParam("tagged") String tagsStr, @RequestParam(value = "page", defaultValue = "0") Integer pageNumber
+    public List<Article> searchByTag(@RequestParam("tagged") String tagsStr, @RequestParam(value = "page", defaultValue = "0") Integer pageNumber
     ) {
         List<String> tagNames = Arrays.stream(tagsStr.split(",")).map(String::trim).distinct().collect(Collectors.toList());
         Page<Article> postsPage = articleService.findArticleByTag(tagNames, pageNumber, 10);
-        return postsPage.getContent().toString();
+        return postsPage.getContent();
     }
 
-    @DeleteMapping(value = "article/{articleId}/delete")
+    @DeleteMapping(value = "articles/{articleId}")
     @ResponseStatus(HttpStatus.OK)
     public String deleteArticle(@PathVariable("articleId") Long articleId) {
         articleService.deleteArticle(articleId);
@@ -58,12 +58,12 @@ public class ArticlesController {
     }
 
     @GetMapping(value = {"/{username}/articles"})
-    public String getUserArticlesList(@PathVariable("username") String username) {
+    public List<Article> getUserArticlesList(@PathVariable("username") String username) {
         List<Article> articles = articleRepository.findAllByUser_Username(username);
-        return articles.toString();
+        return articles;
     }
 
-    @PutMapping(value = {"article/{articleId}/update"})
+    @PutMapping(value = {"articles/{articleId}"})
     public String editArticle(Article editedArticle, @PathVariable("articleId") Long articleId) {
         editedArticle.setId(articleId);
         articleService.updateArticle(editedArticle);
