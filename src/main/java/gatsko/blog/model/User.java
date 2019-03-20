@@ -53,6 +53,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Article> articles = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -67,5 +68,8 @@ public class User {
         lastName = user.getLastName();
         email = user.getEmail();
         enabled = user.isEnabled();
+        articles = user.getArticles();
+        roles = user.getRoles();
+        createdAt = user.getCreatedAt();
     }
 }

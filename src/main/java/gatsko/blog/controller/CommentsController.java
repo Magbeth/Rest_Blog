@@ -7,6 +7,7 @@ import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,41 +15,40 @@ import java.util.List;
 
 @RestController
 public class CommentsController {
-    @Autowired
-    private ArticleService articleService;
+    private final CommentService commentService;
+    private final ArticleService articleService;
 
-    @Autowired
-    private CommentService commentService;
-
-    @Autowired
-    private CommentRepository commentRepository;
+    public CommentsController(CommentService commentService, ArticleService articleService) {
+        this.commentService = commentService;
+        this.articleService = articleService;
+    }
 
     @PostMapping(value = "articles/{articleId}/comments")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    public String createComment(@PathVariable("articleId") Long articleId, Comment comment) {
-        Article article = articleService.getArticle(articleId);
-        comment.setArticle(article);
-        commentService.saveNewComment(comment);
-        return "ok";
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Comment createComment(@PathVariable("articleId") Long articleId, Comment comment) {
+        return commentService.saveNewComment(comment, articleId);
     }
 
     @GetMapping(value = {"/articles/{articleId}/comments"})
+    @ResponseStatus(value = HttpStatus.OK)
     public List<Comment> getUserCommentsList(@PathVariable("articleId") Long articleId) {
-        return commentRepository.findAllByArticle_Id(articleId);
+        return commentService.findAllByArticle_Id(articleId);
     }
 
     @GetMapping(value = "/articles/{articleId}/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.OK)
     public Comment showComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
         return commentService.getComment(commentId);
     }
 
     @DeleteMapping(value = "/articles/{articleId}/comments/{commentId}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
-    public String deleteComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
-        commentService.deleteComment(commentId);
-        return "ok";
+    public ResponseEntity<?> deleteComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
+        Article article = articleService.getArticle(articleId);
+        Comment comment = commentService.getComment(commentId);
+        commentService.deleteCommentFromArticle(comment, article);
+        return ResponseEntity.noContent().build();
     }
 
 

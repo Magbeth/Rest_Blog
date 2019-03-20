@@ -1,7 +1,5 @@
 package gatsko.blog.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gatsko.blog.model.Article;
 import gatsko.blog.model.Tag;
 import gatsko.blog.repository.ArticleRepository;
@@ -11,11 +9,10 @@ import gatsko.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,21 +37,22 @@ public class ArticlesController {
     }
 
     @GetMapping(value = "/articles/{articleId}")
+    @ResponseStatus(value = HttpStatus.OK)
     public Article showArticle(@PathVariable("articleId") Long articleId) {
-        Article article = articleService.getArticle(articleId);
-        return article;
+        return articleService.getArticle(articleId);
     }
 
     @GetMapping(value = "/articles")
     @PreAuthorize("isAnonymous()")
+    @ResponseStatus(value = HttpStatus.OK)
     public List<Article> getPublicArticlesList() {
         List<Article> articles = articleRepository.findAll();
         return articles;
     }
 
     @PostMapping(value = "/articles")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public Article createArticle(Article article, @RequestParam("tagNames") String tags) {
         List<String> tagNames = Arrays.stream(tags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
         Collection<Tag> tags2 = new ArrayList<>();
@@ -77,16 +75,15 @@ public class ArticlesController {
 
 
     @DeleteMapping(value = "articles/{articleId}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
-//    @PreAuthorize("this.articleService.getArticle(#articleId).user.username == authentication.name")
-    public String deleteArticle(@PathVariable("articleId") Long articleId) {
+    public ResponseEntity<?> deleteArticle(@PathVariable("articleId") Long articleId) {
         Article article = articleService.getArticle(articleId);
         articleService.deleteArticle(article);
-        return "ok";
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{username}/articles")
+    @ResponseStatus(value = HttpStatus.OK)
     public List<Article> getUserArticlesList(@PathVariable("username") String username) {
         List<Article> articles = articleRepository.findAllByUser_Username(username);
         return articles;
@@ -94,7 +91,8 @@ public class ArticlesController {
 
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
-    public String editArticle(Article editedArticle, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public Article editArticle(Article editedArticle, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
         editedArticle.setId(articleId);
         List<String> tagNames = Arrays.stream(editedTags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
         Collection<Tag> tags = new ArrayList<>();
@@ -104,12 +102,11 @@ public class ArticlesController {
             tags.add(tag);
         }
         editedArticle.setTags(tags);
-        articleService.updateArticle(editedArticle);
-        return "ok";
-
+        return articleService.updateArticle(editedArticle);
     }
 
     @GetMapping(value ="tag-cloud", params = {"tagName"})
+    @ResponseStatus(value = HttpStatus.OK)
     public String getArticlesWithTagCount(@RequestParam("tagName") String tagName) {
         Long count = articleRepository.findArticleCountByTag(tagName);
         return tagName + " " + count;

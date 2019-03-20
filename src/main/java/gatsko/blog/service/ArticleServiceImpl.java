@@ -70,7 +70,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticle(Article article){
         articleRepository.delete(article.getId());
-        articleRepository.flush();
     }
 
     //TODO: preauthorize for author
