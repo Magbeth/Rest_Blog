@@ -7,6 +7,7 @@ import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class CommentsController {
 
     @PostMapping(value = "articles/{articleId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
     public String createComment(@PathVariable("articleId") Long articleId, Comment comment) {
         Article article = articleService.getArticle(articleId);
         comment.setArticle(article);
@@ -33,18 +35,17 @@ public class CommentsController {
 
     @GetMapping(value = {"/articles/{articleId}/comments"})
     public List<Comment> getUserCommentsList(@PathVariable("articleId") Long articleId) {
-        List<Comment> comments = commentRepository.findAllByArticle_Id(articleId);
-        return comments;
+        return commentRepository.findAllByArticle_Id(articleId);
     }
 
     @GetMapping(value = "/articles/{articleId}/comments/{commentId}")
     public Comment showComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
-        Comment comment = commentService.getComment(commentId);
-        return comment;
+        return commentService.getComment(commentId);
     }
 
     @DeleteMapping(value = "/articles/{articleId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
     public String deleteComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
         return "ok";

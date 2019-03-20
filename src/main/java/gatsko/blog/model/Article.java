@@ -25,7 +25,7 @@ import java.util.List;
 public class Article {
     enum Status {PUBLIC, DRAFT}
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(length = 250, nullable = false)
@@ -63,6 +63,6 @@ public class Article {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private User user;
 }

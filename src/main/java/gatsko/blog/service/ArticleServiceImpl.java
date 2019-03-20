@@ -66,19 +66,13 @@ public class ArticleServiceImpl implements ArticleService {
         return article;
     }
 
-    //TODO: check for user is article author
     @Transactional
     @Override
-    public void deleteArticle(Long articleId) {
-//        Article article = getArticle(articleId);
-//        if (article.getUser().equals(userService.currentUser())) {
-//
-//        }
-        articleRepository.delete(articleId);
+    public void deleteArticle(Article article){
+        articleRepository.delete(article.getId());
         articleRepository.flush();
     }
 
-    //TODO: check for user is article author
     @Transactional
     @Override
     public Article updateArticle(Article editedArticle) {

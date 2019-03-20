@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +15,7 @@ import java.util.Collection;
 @ToString(exclude = "articles")
 @Builder
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Serializable {
     @Id
     @GeneratedValue
     private Long Id;

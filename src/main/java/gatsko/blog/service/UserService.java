@@ -1,9 +1,11 @@
 package gatsko.blog.service;
 
 
+import gatsko.blog.model.DTO.RegistrationRequest;
 import gatsko.blog.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     User findByEmail(String email);
 
@@ -14,5 +16,7 @@ public interface UserService {
     boolean usernameExists(String username);
 
     User currentUser();
+    User save(User user);
+    User createUser(RegistrationRequest registrationRequest);
 
 }

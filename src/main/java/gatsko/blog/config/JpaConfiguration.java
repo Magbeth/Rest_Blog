@@ -24,7 +24,6 @@ import java.util.Properties;
  * @version v1.0
  */
 @Configuration
-@ComponentScan(value = "gatsko.blog")
 @EnableJpaRepositories(basePackages = "gatsko.blog.repository")
 @EnableTransactionManagement
 public class JpaConfiguration {
