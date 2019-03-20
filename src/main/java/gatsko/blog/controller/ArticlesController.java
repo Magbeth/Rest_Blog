@@ -86,7 +86,7 @@ public class ArticlesController {
 
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @ResponseStatus(value = HttpStatus.OK)
     public Article editArticle(ArticleDTO editedData, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
         List<String> tagNames = Arrays.stream(editedTags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
         Collection<Tag> tags = new ArrayList<>();

@@ -32,6 +32,7 @@ and <a href = https://www.toptal.com/java/rest-security-with-jwt-spring-security
 - login user with generation of Jwt Token for requests authorization;
 <b> TODO:</b> checking/exception handling caused by user not found, username/email already exists and etc.
 
+<b>TODO:</b> Fix hibernate.enable_lazy_load_no_trans anti-pattern. 
 
 
 

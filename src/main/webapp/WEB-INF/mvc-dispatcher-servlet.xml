@@ -12,7 +12,6 @@
             </list>
         </property>
     </bean>
-
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="username" value="postgres"/>
         <property name="password" value=""/>
