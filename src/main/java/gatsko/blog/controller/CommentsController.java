@@ -2,10 +2,8 @@ package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
 import gatsko.blog.model.Comment;
-import gatsko.blog.repository.CommentRepository;
 import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

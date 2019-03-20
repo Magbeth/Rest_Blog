@@ -1,6 +1,7 @@
 package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
+import gatsko.blog.model.DTO.ArticleDTO;
 import gatsko.blog.model.Tag;
 import gatsko.blog.repository.ArticleRepository;
 import gatsko.blog.repository.TagRepository;
@@ -21,15 +22,9 @@ import java.util.stream.Collectors;
 
 @RestController
 public class ArticlesController {
-    @Autowired
-    private UserService userService;
 
-    private ArticleService articleService;
-
-    private ArticleRepository articleRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
+    private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
     public ArticlesController(ArticleService articleService, ArticleRepository articleRepository) {
         this.articleService = articleService;
@@ -92,8 +87,7 @@ public class ArticlesController {
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public Article editArticle(Article editedArticle, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
-        editedArticle.setId(articleId);
+    public Article editArticle(ArticleDTO editedData, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
         List<String> tagNames = Arrays.stream(editedTags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
         Collection<Tag> tags = new ArrayList<>();
         for (String name : tagNames) {
@@ -101,8 +95,9 @@ public class ArticlesController {
             tag.setName(name);
             tags.add(tag);
         }
-        editedArticle.setTags(tags);
-        return articleService.updateArticle(editedArticle);
+        editedData.setTags(tags);
+        Article articleToEdit = articleService.getArticle(articleId);
+        return articleService.updateArticle(articleToEdit, editedData);
     }
 
     @GetMapping(value ="tag-cloud", params = {"tagName"})

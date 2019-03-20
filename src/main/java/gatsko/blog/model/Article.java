@@ -23,7 +23,6 @@ import java.util.List;
 @Table(name = "articles")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Article {
-    enum Status {PUBLIC, DRAFT}
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -36,7 +35,7 @@ public class Article {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private ArticleStatus status;
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)

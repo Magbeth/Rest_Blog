@@ -16,13 +16,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-/**
- * 18.04.2018
- * JpaConfiguration
- *
- * @author Sidikov Marsel (First Software Engineering Platform)
- * @version v1.0
- */
 @Configuration
 @EnableJpaRepositories(basePackages = "gatsko.blog.repository")
 @EnableTransactionManagement

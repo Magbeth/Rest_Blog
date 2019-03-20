@@ -1,6 +1,7 @@
 package gatsko.blog.service;
 
 import gatsko.blog.model.Article;
+import gatsko.blog.model.DTO.ArticleDTO;
 import gatsko.blog.model.Tag;
 import gatsko.blog.repository.ArticleRepository;
 import gatsko.blog.repository.TagRepository;
@@ -75,8 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
     //TODO: preauthorize for author
     @Transactional
     @Override
-    public Article updateArticle(Article editedArticle) {
-        Article article = articleRepository.findOne(editedArticle.getId());
+    public Article updateArticle(Article article, ArticleDTO editedArticle) {
         article.setFullPostText(editedArticle.getFullPostText());
         article.setTitle(editedArticle.getTitle());
         article.setUpdatedAt(LocalDateTime.now());
@@ -87,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleTags.add(tagService.saveTag(tag));
         }
         article.setTags(articleTags);
-        return article;
+        return articleRepository.saveAndFlush(article);
     }
 
 }

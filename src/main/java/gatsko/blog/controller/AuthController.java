@@ -24,11 +24,13 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+    private final JwtProvider tokenProvider;
 
-    @Autowired
-    private JwtProvider tokenProvider;
+    public AuthController(AuthService authService, JwtProvider jwtProvider) {
+        this.authService = authService;
+        this.tokenProvider = jwtProvider;
+    }
 
 //    @Autowired
 //    private ApplicationEventPublisher applicationEventPublisher;
