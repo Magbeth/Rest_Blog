@@ -2,6 +2,7 @@ package gatsko.blog.security;
 
 import gatsko.blog.model.CustomUserDetails;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -12,11 +13,11 @@ import java.util.Date;
 public class JwtProvider {
 
 
-//    @Value("${grokonez.app.jwtSecret}")
-    private String jwtSecret = "jwtGrokonezSecretKey";
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
 
-//    @Value("${grokonez.app.jwtExpiration}")
-    private Long jwtExpiration = 86400L;
+    @Value("${app.jwtExpiration}")
+    private Long jwtExpiration;
 
     public String generateJwtToken(CustomUserDetails customUserDetails) {
 

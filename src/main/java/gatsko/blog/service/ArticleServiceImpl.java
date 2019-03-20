@@ -73,6 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.flush();
     }
 
+    //TODO: preauthorize for author
     @Transactional
     @Override
     public Article updateArticle(Article editedArticle) {

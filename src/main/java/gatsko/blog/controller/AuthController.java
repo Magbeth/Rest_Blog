@@ -2,12 +2,12 @@ package gatsko.blog.controller;
 
 
 import gatsko.blog.model.*;
+import gatsko.blog.model.DTO.JwtAuthenticationResponse;
 import gatsko.blog.model.DTO.LoginRequest;
 import gatsko.blog.model.DTO.RegistrationRequest;
 import gatsko.blog.security.JwtProvider;
 import gatsko.blog.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

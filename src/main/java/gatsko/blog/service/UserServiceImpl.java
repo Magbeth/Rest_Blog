@@ -4,6 +4,7 @@ import gatsko.blog.model.*;
 import gatsko.blog.model.DTO.RegistrationRequest;
 import gatsko.blog.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User currentUser() {
-        return findByUsername("1111");
+        return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public UserDetails loadUserById(Long id) {
