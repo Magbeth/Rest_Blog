@@ -48,16 +48,8 @@ public class ArticlesController {
     @PostMapping(value = "/articles")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Article createArticle(Article article, @RequestParam("tagNames") String tags) {
-        List<String> tagNames = Arrays.stream(tags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
-        Collection<Tag> tags2 = new ArrayList<>();
-        for (String name : tagNames) {
-            Tag tag = new Tag();
-            tag.setName(name);
-            tags2.add(tag);
-        }
-//        article.setTags(tags2);
-        return articleService.saveNewArticle(article, tags2);
+    public Article createArticle(Article article) {
+        return articleService.saveNewArticle(article);
     }
 
     @GetMapping(value = "/articles", params = {"tagged"})
@@ -87,15 +79,7 @@ public class ArticlesController {
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.OK)
-    public Article editArticle(ArticleDTO editedData, @PathVariable("articleId") Long articleId, @RequestParam("tagNames") String editedTags) {
-        List<String> tagNames = Arrays.stream(editedTags.split(",")).map(String::trim).distinct().collect(Collectors.toList());
-        Collection<Tag> tags = new ArrayList<>();
-        for (String name : tagNames) {
-            Tag tag = new Tag();
-            tag.setName(name);
-            tags.add(tag);
-        }
-        editedData.setTags(tags);
+    public Article editArticle(ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
         Article articleToEdit = articleService.getArticle(articleId);
         return articleService.updateArticle(articleToEdit, editedData);
     }

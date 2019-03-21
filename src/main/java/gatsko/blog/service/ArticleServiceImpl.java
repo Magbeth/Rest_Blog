@@ -55,11 +55,11 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public Article saveNewArticle(Article article, Collection<Tag> tags) {
+    public Article saveNewArticle(Article article) {
         article.setCreatedAt(LocalDateTime.now());
         article.setUser(userService.currentUser());
         Collection<Tag> articleTags = new ArrayList<>();
-        for (Tag tag : tags) {
+        for (Tag tag : article.getTags()) {
             articleTags.add(tagService.saveTag(tag));
         }
         article.setTags(articleTags);
@@ -73,7 +73,6 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.delete(article.getId());
     }
 
-    //TODO: preauthorize for author
     @Transactional
     @Override
     public Article updateArticle(Article article, ArticleDTO editedArticle) {

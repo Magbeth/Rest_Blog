@@ -17,7 +17,7 @@ public interface ArticleService {
 
     Page<Article> findArticleByTag(List<String> tags, int pageNumber, int pageSize);
 
-    Article saveNewArticle(Article article, Collection<Tag> tags);
+    Article saveNewArticle(Article article);
 
 //    void setArticleVisibility(Long articleId, boolean hide);
 
