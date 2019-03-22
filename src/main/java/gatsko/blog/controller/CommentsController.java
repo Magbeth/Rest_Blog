@@ -4,12 +4,15 @@ import gatsko.blog.model.Article;
 import gatsko.blog.model.Comment;
 import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.CommentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class CommentsController {
@@ -30,23 +33,50 @@ public class CommentsController {
 
     @GetMapping(value = {"/articles/{articleId}/comments"})
     @ResponseStatus(value = HttpStatus.OK)
-    public List<Comment> getUserCommentsList(@PathVariable("articleId") Long articleId) {
-        return commentService.findAllByArticle_Id(articleId);
+    public Page<Comment> getArticleCommentsList(@PathVariable("articleId") Long articleId,
+                                                @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                                @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
+                                                @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
+                                                @RequestParam(value = "order", defaultValue = "DESC") String order) {
+        Sort sort = createSortRequest(order, properties);
+        return commentService.getCommentsForArticle(articleId, pageNumber, pageSize, sort);
     }
 
     @GetMapping(value = "/articles/{articleId}/comments/{commentId}")
     @ResponseStatus(value = HttpStatus.OK)
     public Comment showComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
-        return commentService.getComment(commentId);
+        return commentService.getComment(commentId, articleId);
     }
 
     @DeleteMapping(value = "/articles/{articleId}/comments/{commentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable("articleId") Long articleId, @PathVariable("commentId") Long commentId) {
         Article article = articleService.getArticle(articleId);
-        Comment comment = commentService.getComment(commentId);
+        Comment comment = commentService.getComment(commentId, articleId);
         commentService.deleteCommentFromArticle(comment, article);
-        return ResponseEntity.noContent().build();
+    }
+
+    //                    =================================
+    //                       utility logic. to be replaced
+    //                    =================================
+    enum CommentProperties {createdAt, id}
+
+    private Sort createSortRequest(String order, String properties) {
+        //Splitting passed properties to array and removing invalid properties
+        List<String> sortingProperties =
+                Arrays.stream(properties.split(","))
+                        .map(String::trim)
+                        .distinct()
+                        .filter(property -> Arrays.stream(CommentProperties.values()).anyMatch(t -> t.name().equals(property)))
+                        .collect(Collectors.toList());
+        //Setting default sorting value
+        if (sortingProperties.size() == 0) {
+            sortingProperties.add("createdAt");
+        }
+        Sort.Direction sortOrder =
+                (order.toUpperCase().equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return new Sort(sortOrder, sortingProperties);
     }
 
 

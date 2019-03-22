@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gatsko.blog.model.DTO.ArticleDTO;
 import gatsko.blog.utils.JsonDateDeserializer;
 import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
@@ -55,8 +56,7 @@ public class Article {
     private Collection<Tag> tags = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
-    @org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.EXTRA)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "article")
     @OrderBy("createdAt ASC")
     private List<Comment> comments = new ArrayList<>();
 
@@ -64,4 +64,14 @@ public class Article {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     private User user;
+
+    public Article(ArticleDTO articleDTO) {
+        this.title = articleDTO.getTitle();
+        this.fullPostText = articleDTO.getFullPostText();
+        this.tags = articleDTO.getTags();
+        this.status = articleDTO.getStatus();
+    }
+    public boolean isPublic() {
+        return this.status == ArticleStatus.PUBLIC;
+    }
 }

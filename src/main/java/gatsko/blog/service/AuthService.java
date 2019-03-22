@@ -1,5 +1,6 @@
 package gatsko.blog.service;
 
+import gatsko.blog.exception.ResourceAlreadyInUseException;
 import gatsko.blog.model.CustomUserDetails;
 import gatsko.blog.model.DTO.LoginRequest;
 import gatsko.blog.model.DTO.RegistrationRequest;
@@ -16,18 +17,18 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
+    private final UserService userService;
+    private final JwtProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtProvider tokenProvider;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public AuthService(UserService userService, JwtProvider tokenProvider,
+                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+        this.userService = userService;
+        this.tokenProvider = tokenProvider;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
 
     /**
      * Registers a new user in the database by performing a series of quick checks.
@@ -36,13 +37,16 @@ public class AuthService {
      */
     public Optional<User> registerUser(RegistrationRequest newRegistrationRequest) {
         String newRegistrationRequestEmail = newRegistrationRequest.getEmail();
-//        if (emailAlreadyExists(newRegistrationRequestEmail)) {
-//            throw new ResourceAlreadyInUseException("Email", "Address", newRegistrationRequestEmail);
-//        }
+        if (emailAlreadyExists(newRegistrationRequestEmail)) {
+            throw new ResourceAlreadyInUseException("Registration failed. Email already used");
+        }
+        String newRegistrationUsername = newRegistrationRequest.getUsername();
+        if (usernameAlreadyExists(newRegistrationUsername)) {
+            throw new ResourceAlreadyInUseException("Registration failed. Username already used");
+        }
 
         User newUser = userService.createUser(newRegistrationRequest);
-        User registeredNewUser = userService.save(newUser);
-        return Optional.ofNullable(registeredNewUser);
+        return Optional.ofNullable(userService.save(newUser));
     }
 
     /**
@@ -50,18 +54,18 @@ public class AuthService {
      *
      * @return true if the email exists else false
      */
-//    public Boolean emailAlreadyExists(String email) {
-//        return userService.existsByEmail(email);
-//    }
+    private Boolean emailAlreadyExists(String email) {
+        return userService.emailExists(email);
+    }
 
     /**
      * Checks if the given email already exists in the database repository or not
      *
      * @return true if the email exists else false
      */
-//    public Boolean usernameAlreadyExists(String username) {
-//        return userService.existsByUsername(username);
-//    }
+    private Boolean usernameAlreadyExists(String username) {
+        return userService.usernameExists(username);
+    }
 
     public Optional<Authentication> authenticateUser(LoginRequest loginRequest) {
         return Optional.ofNullable(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),

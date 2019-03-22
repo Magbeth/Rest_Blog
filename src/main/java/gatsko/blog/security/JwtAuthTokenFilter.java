@@ -4,6 +4,7 @@ package gatsko.blog.security;
 import gatsko.blog.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@PropertySource("classpath:/Jwt.properties")
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Value("${app.jwt.header}")
     private String tokenRequestHeader;
@@ -51,7 +53,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-//            log.error("Failed to set user authentication in security context: ", ex);
+
         }
 
         filterChain.doFilter(request, response);
@@ -63,7 +65,6 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader(tokenRequestHeader);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(tokenRequestHeaderPrefix)) {
-//            log.info("Extracted Token: " + bearerToken);
             return bearerToken.replace(tokenRequestHeaderPrefix, "");
         }
         return null;

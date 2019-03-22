@@ -39,23 +39,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean usernameExists(String username) {
-        return findByUsername(username) != null;
-    }
-
-    @Override
-    public boolean emailExists(String email) {
-        return findByEmail(email) != null;
-    }
-
-    @Override
     public User currentUser() {
         return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public UserDetails loadUserById(Long id) {
         Optional<User> dbUser = usersRepository.findById(id);
-//        logger.info("Got user: " + dbUser + " for " + id);
         return dbUser.map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching id in the " +
                         "database for " + id));
@@ -64,9 +53,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> dbUser = usersRepository.findByUsername(username);
-//        logger.info("Got user: " + dbUser + " for " + email);
         return dbUser.map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching email in the " +
+                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching username in the " +
                         "database for " + username));
     }
 
@@ -92,6 +80,16 @@ public class UserServiceImpl implements UserService {
     private Set<Role> getRolesForNewUser() {
         Set<Role> newUserRoles = new HashSet<>(roleService.findAll());
         return newUserRoles;
+    }
+
+    @Override
+    public boolean emailExists (String email){
+        return usersRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean usernameExists (String username) {
+        return usersRepository.existsByUsername(username);
     }
 
 }

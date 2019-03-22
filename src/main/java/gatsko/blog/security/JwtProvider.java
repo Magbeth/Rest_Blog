@@ -1,5 +1,6 @@
 package gatsko.blog.security;
 
+import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.model.CustomUserDetails;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,22 +58,16 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-//            logger.error("Invalid JWT signature");
-//            throw new InvalidTokenRequestException("JWT", authToken, "Incorrect signature");
+            throw new InvalidTokenRequestException("JWT", authToken, "Incorrect signature");
         } catch (MalformedJwtException ex) {
-//            logger.error("Invalid JWT token");
-//            throw new InvalidTokenRequestException("JWT", authToken, "Malformed jwt token");
+            throw new InvalidTokenRequestException("JWT", authToken, "Malformed jwt token");
         } catch (ExpiredJwtException ex) {
-//            logger.error("Expired JWT token");
-//            throw new InvalidTokenRequestException("JWT", authToken, "Token expired. Refresh required.");
+            throw new InvalidTokenRequestException("JWT", authToken, "Token expired. Refresh required.");
         } catch (UnsupportedJwtException ex) {
-//            logger.error("Unsupported JWT token");
-//            throw new InvalidTokenRequestException("JWT", authToken, "Unsupported JWT token");
+            throw new InvalidTokenRequestException("JWT", authToken, "Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-//            logger.error("JWT claims string is empty.");
-//            throw new InvalidTokenRequestException("JWT", authToken, "Illegal argument token");
+            throw new InvalidTokenRequestException("JWT", authToken, "Illegal argument token");
         }
-        return false;
     }
 
     /**

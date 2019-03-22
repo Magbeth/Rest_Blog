@@ -1,6 +1,9 @@
-package gatsko.blog.security;
+package gatsko.blog.config;
 
 
+import gatsko.blog.security.JwtAuthTokenFilter;
+import gatsko.blog.security.JwtAuthenticationEntryPoint;
+import gatsko.blog.service.UserService;
 import gatsko.blog.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    UserServiceImpl userDetailsService;
+    private UserService userDetailsService;
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -54,7 +57,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll();
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/**/articles/**").permitAll()
+                .antMatchers("/tag-cloud").permitAll()
+                .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 

@@ -2,92 +2,136 @@ package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
 import gatsko.blog.model.DTO.ArticleDTO;
-import gatsko.blog.model.Tag;
-import gatsko.blog.repository.ArticleRepository;
-import gatsko.blog.repository.TagRepository;
+import gatsko.blog.model.DTO.TagCloudResponse;
 import gatsko.blog.service.ArticleService;
 import gatsko.blog.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import javax.validation.Valid;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 public class ArticlesController {
-
+    private UserService userService;
     private final ArticleService articleService;
-    private final ArticleRepository articleRepository;
 
-    public ArticlesController(ArticleService articleService, ArticleRepository articleRepository) {
+    public ArticlesController(ArticleService articleService, UserService userService) {
         this.articleService = articleService;
-        this.articleRepository = articleRepository;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/articles/{articleId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public Article showArticle(@PathVariable("articleId") Long articleId) {
-        return articleService.getArticle(articleId);
+    public ArticleDTO showArticle(@PathVariable("articleId") Long articleId) {
+        return articleService.getArticleForReading(articleId);
     }
 
     @GetMapping(value = "/articles")
-    @PreAuthorize("isAnonymous()")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<Article> getPublicArticlesList() {
-        List<Article> articles = articleRepository.findAll();
-        return articles;
+    public Page<Article> getPublicArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                               @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
+                                               @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
+                                               @RequestParam(value = "order", defaultValue = "DESC") String order) {
+        Sort sort = createSortRequest(order, properties);
+        return articleService.getArticlesPage(pageNumber, pageSize, sort);
     }
 
     @PostMapping(value = "/articles")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Article createArticle(Article article) {
+    public ArticleDTO createArticle(ArticleDTO article) {
         return articleService.saveNewArticle(article);
     }
 
     @GetMapping(value = "/articles", params = {"tagged"})
-    public List<Article> searchByTag(@RequestParam("tagged") String tagsStr, @RequestParam(value = "page", defaultValue = "0") Integer pageNumber
+    public Page<Article> searchByTag(@RequestParam("tagged") String tagsStr,
+                                     @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                     @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
+                                     @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
+                                     @RequestParam(value = "order", defaultValue = "DESC") String order
     ) {
-        List<String> tagNames = Arrays.stream(tagsStr.split(",")).map(String::trim).distinct().collect(Collectors.toList());
-        Page<Article> articlesPage = articleService.findArticleByTag(tagNames, pageNumber, 10);
-        return articlesPage.getContent();
+        Sort sort = createSortRequest(order, properties);
+        List<String> tagNames = Arrays.stream(tagsStr.split(",")).map(String::trim).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        return articleService.findArticleByTag(tagNames, pageNumber, pageSize, sort);
     }
 
 
     @DeleteMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteArticle(@PathVariable("articleId") Long articleId) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteArticle(@PathVariable("articleId") Long articleId) {
         Article article = articleService.getArticle(articleId);
         articleService.deleteArticle(article);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{username}/articles")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<Article> getUserArticlesList(@PathVariable("username") String username) {
-        List<Article> articles = articleRepository.findAllByUser_Username(username);
-        return articles;
+    public Page<Article> getUserArticlesList(@PathVariable("username") String username,
+                                             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                             @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
+                                             @RequestParam(value = "order", defaultValue = "DESC") String order) {
+        Sort sort = createSortRequest(order, properties);
+        return articleService.getUserArticlesPage(username, pageNumber, pageSize, sort);
     }
 
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.OK)
-    public Article editArticle(ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
+    public ArticleDTO editArticle(@Valid ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
         Article articleToEdit = articleService.getArticle(articleId);
         return articleService.updateArticle(articleToEdit, editedData);
     }
 
-    @GetMapping(value ="tag-cloud", params = {"tagName"})
+    @GetMapping(value = "tag-cloud", params = {"tags"})
     @ResponseStatus(value = HttpStatus.OK)
-    public String getArticlesWithTagCount(@RequestParam("tagName") String tagName) {
-        Long count = articleRepository.findArticleCountByTag(tagName);
-        return tagName + " " + count;
+    public TagCloudResponse getArticlesWithTagCount(@RequestParam("tags") String tags) {
+        List<String> tagNames = Arrays.stream(tags.split(",")).map(String::trim).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        Long count = articleService.countArticlesWithTag(tagNames);
+        return new TagCloudResponse(tagNames, count);
+    }
+
+    @GetMapping(value = "/my")
+    @ResponseStatus(value = HttpStatus.OK)
+    @PreAuthorize("isAuthenticated()")
+    public Page<Article> getUserArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+                                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                             @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
+                                             @RequestParam(value = "order", defaultValue = "DESC") String order) {
+        String myUsername = userService.currentUser().getUsername();
+        Sort sort = createSortRequest(order, properties);
+        return articleService.getUserArticlesPage(myUsername, pageNumber, pageSize, sort);
+    }
+
+    //                    =================================
+    //                       utility logic. to be replaced
+    //                    =================================
+
+    //enum of article properties for validating passed to URL arguments
+    //Maybe here we can just throw exception in case of wrong property
+    enum ArticleProperties {
+        createdAt, updatedAt, title, id, status
+    }
+
+    private Sort createSortRequest(String order, String properties) {
+        //Splitting passed properties to array and removing invalid properties
+        List<String> sortingProperties =
+                Arrays.stream(properties.split(","))
+                        .map(String::trim)
+                        .distinct()
+                        .filter(property -> Arrays.stream(ArticleProperties.values()).anyMatch(t -> t.name().equals(property)))
+                        .collect(Collectors.toList());
+        //Setting default sorting value
+        if (sortingProperties.size() == 0) {
+            sortingProperties.add("createdAt");
+        }
+        Sort.Direction sortOrder =
+                (order.toUpperCase().equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return new Sort(sortOrder, sortingProperties);
     }
 }
