@@ -72,4 +72,8 @@ public class User {
         roles = user.getRoles();
         createdAt = user.getCreatedAt();
     }
+
+    public void confirmVerification(){
+        this.enabled = true;
+    }
 }

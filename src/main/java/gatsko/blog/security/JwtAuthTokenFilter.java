@@ -1,7 +1,7 @@
 package gatsko.blog.security;
 
 
-import gatsko.blog.service.UserServiceImpl;
+import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -32,7 +32,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private JwtProvider jwtTokenProvider;
 
     @Autowired
-    private UserServiceImpl userDetailsService;
+    private UserService userDetailsService;
 
     /**
      * Filter the incoming request for a valid token in the request header

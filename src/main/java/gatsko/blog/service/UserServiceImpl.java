@@ -1,8 +1,12 @@
 package gatsko.blog.service;
 
+import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.*;
-import gatsko.blog.model.DTO.RegistrationRequest;
+import gatsko.blog.model.dto.PasswordResetRequest;
+import gatsko.blog.model.dto.RegistrationRequest;
+import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.repository.UsersRepository;
+import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +32,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
+
     @Override
     public User findByEmail(String email) {
         return usersRepository.findByEmailIgnoreCase(email);
@@ -43,6 +50,7 @@ public class UserServiceImpl implements UserService {
         return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    @Override
     public UserDetails loadUserById(Long id) {
         Optional<User> dbUser = usersRepository.findById(id);
         return dbUser.map(CustomUserDetails::new)
@@ -71,7 +79,7 @@ public class UserServiceImpl implements UserService {
         newUser.setUsername(registrationRequest.getUsername());
         newUser.setLastName(registrationRequest.getLastName());
         newUser.setFirstName(registrationRequest.getFirstName());
-        newUser.setEnabled(true);
+        newUser.setEnabled(false);
         newUser.setRoles(getRolesForNewUser());
         newUser.setCreatedAt(LocalDateTime.now());
         return newUser;
@@ -92,4 +100,31 @@ public class UserServiceImpl implements UserService {
         return usersRepository.existsByUsername(username);
     }
 
+    @Override
+    public PasswordResetToken generatePasswordResetToken(String email) {
+        User user = findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User with email " + email + " not found");
+        }
+        PasswordResetToken passwordResetToken = passwordResetTokenService.createToken();
+        passwordResetToken.setUser(user);
+        passwordResetTokenService.save(passwordResetToken);
+        return passwordResetToken;
+    }
+
+    @Override
+    public Optional<User> resetPassword(PasswordResetRequest passwordResetRequest) {
+        String token = passwordResetRequest.getToken();
+        PasswordResetToken passwordResetToken = passwordResetTokenService.findByToken(token)
+                .orElseThrow(()->new ResourceNotFoundException("Invalid token"));
+        passwordResetTokenService.verifyExpiration(passwordResetToken);
+        String encodedPassword = passwordEncoder.encode(passwordResetRequest.getPassword());
+        return Optional.of(passwordResetToken)
+                .map(PasswordResetToken::getUser)
+                .map(user -> {
+                    user.setPassword(encodedPassword);
+                    usersRepository.save(user);
+                    return user;
+                });
+    }
 }

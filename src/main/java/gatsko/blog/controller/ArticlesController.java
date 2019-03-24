@@ -1,10 +1,10 @@
 package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
-import gatsko.blog.model.DTO.ArticleDTO;
-import gatsko.blog.model.DTO.TagCloudResponse;
-import gatsko.blog.service.ArticleService;
-import gatsko.blog.service.UserService;
+import gatsko.blog.model.dto.ArticleDTO;
+import gatsko.blog.model.dto.TagCloudResponse;
+import gatsko.blog.service.ApiInterface.ArticleService;
+import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package gatsko.blog.repository;
 
 import gatsko.blog.model.Article;
-import gatsko.blog.model.ArticleStatus;
+import gatsko.blog.model.enums.ArticleStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

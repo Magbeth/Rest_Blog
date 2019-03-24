@@ -6,8 +6,8 @@ public class InvalidTokenRequestException extends RuntimeException {
 //    private String token;
 //    private String message;
 
-    public InvalidTokenRequestException(String tokenType, String token, String message) {
-        super(String.format("Invalid [%s] token [%s] : %s", token, tokenType, message));
+    public InvalidTokenRequestException(String message) {
+        super(message);
 //        this.tokenType = tokenType;
 //        this.token = token;
 //        this.message = message;

@@ -1,4 +1,4 @@
-package gatsko.blog.service;
+package gatsko.blog.service.ApiInterface;
 
 import gatsko.blog.model.Tag;
 

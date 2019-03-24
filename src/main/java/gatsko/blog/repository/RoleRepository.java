@@ -1,7 +1,7 @@
 package gatsko.blog.repository;
 
 import gatsko.blog.model.Role;
-import gatsko.blog.model.RoleName;
+import gatsko.blog.model.enums.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

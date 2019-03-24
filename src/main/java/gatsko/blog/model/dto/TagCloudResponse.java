@@ -1,4 +1,4 @@
-package gatsko.blog.model.DTO;
+package gatsko.blog.model.dto;
 
 import lombok.Data;
 

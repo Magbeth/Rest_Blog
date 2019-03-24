@@ -5,6 +5,8 @@ import gatsko.blog.model.Article;
 import gatsko.blog.model.Comment;
 import gatsko.blog.repository.ArticleRepository;
 import gatsko.blog.repository.CommentRepository;
+import gatsko.blog.service.ApiInterface.CommentService;
+import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

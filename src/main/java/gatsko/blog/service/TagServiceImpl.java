@@ -2,6 +2,7 @@ package gatsko.blog.service;
 
 import gatsko.blog.model.Tag;
 import gatsko.blog.repository.TagRepository;
+import gatsko.blog.service.ApiInterface.TagService;
 import org.springframework.stereotype.Service;
 
 @Service("tagService")

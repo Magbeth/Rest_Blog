@@ -58,15 +58,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            throw new InvalidTokenRequestException("JWT", authToken, "Incorrect signature");
+            throw new InvalidTokenRequestException("JWT" + authToken +"Incorrect signature");
         } catch (MalformedJwtException ex) {
-            throw new InvalidTokenRequestException("JWT", authToken, "Malformed jwt token");
+            throw new InvalidTokenRequestException("JWT" + authToken + "Malformed jwt token");
         } catch (ExpiredJwtException ex) {
-            throw new InvalidTokenRequestException("JWT", authToken, "Token expired. Refresh required.");
+            throw new InvalidTokenRequestException("JWT" + authToken + "Token expired. Refresh required.");
         } catch (UnsupportedJwtException ex) {
-            throw new InvalidTokenRequestException("JWT", authToken, "Unsupported JWT token");
+            throw new InvalidTokenRequestException("JWT" + authToken + "Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            throw new InvalidTokenRequestException("JWT", authToken, "Illegal argument token");
+            throw new InvalidTokenRequestException("JWT" + authToken + "Illegal argument token");
         }
     }
 

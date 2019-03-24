@@ -1,12 +1,15 @@
 package gatsko.blog.service;
 
+import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.exception.ResourceAlreadyInUseException;
+import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.CustomUserDetails;
-import gatsko.blog.model.DTO.LoginRequest;
-import gatsko.blog.model.DTO.RegistrationRequest;
+import gatsko.blog.model.dto.LoginRequest;
+import gatsko.blog.model.dto.RegistrationRequest;
+import gatsko.blog.model.Token.EmailVerificationToken;
 import gatsko.blog.model.User;
 import gatsko.blog.security.JwtProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,20 +24,18 @@ public class AuthService {
     private final JwtProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final EmailVerificationTokenService emailVerificationTokenService;
 
     public AuthService(UserService userService, JwtProvider tokenProvider,
-                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
+                       EmailVerificationTokenService emailVerificationTokenService) {
         this.userService = userService;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.emailVerificationTokenService = emailVerificationTokenService;
     }
 
-    /**
-     * Registers a new user in the database by performing a series of quick checks.
-     *
-     * @return A user object if successfully created
-     */
     public Optional<User> registerUser(RegistrationRequest newRegistrationRequest) {
         String newRegistrationRequestEmail = newRegistrationRequest.getEmail();
         if (emailAlreadyExists(newRegistrationRequestEmail)) {
@@ -49,20 +50,10 @@ public class AuthService {
         return Optional.ofNullable(userService.save(newUser));
     }
 
-    /**
-     * Checks if the given email already exists in the database repository or not
-     *
-     * @return true if the email exists else false
-     */
     private Boolean emailAlreadyExists(String email) {
         return userService.emailExists(email);
     }
 
-    /**
-     * Checks if the given email already exists in the database repository or not
-     *
-     * @return true if the email exists else false
-     */
     private Boolean usernameAlreadyExists(String username) {
         return userService.usernameExists(username);
     }
@@ -76,6 +67,31 @@ public class AuthService {
         return tokenProvider.generateJwtToken(customUserDetails);
     }
 
+    public Optional<User> confirmEmailRegistration(String emailToken) {
+        Optional<EmailVerificationToken> emailVerificationTokenOpt =
+                emailVerificationTokenService.findByToken(emailToken);
+        emailVerificationTokenOpt.orElseThrow(() ->
+                new InvalidTokenRequestException("Invalid Token " + emailToken));
+        Optional<User> registeredUserOpt = emailVerificationTokenOpt.map(EmailVerificationToken::getUser);
+        if (emailVerificationTokenService.isTokenExpiry(emailVerificationTokenOpt.get())) {
+            throw new InvalidTokenRequestException("Token expired");
+        }
+        emailVerificationTokenOpt.ifPresent(EmailVerificationToken::confirmStatus);
+        emailVerificationTokenOpt.ifPresent(emailVerificationTokenService::save);
+        registeredUserOpt.ifPresent(User::confirmVerification);
+        registeredUserOpt.ifPresent(userService::save);
+        return registeredUserOpt;
+    }
+
+    public Optional<EmailVerificationToken> recreateRegistrationToken(String existingToken) {
+        EmailVerificationToken emailVerificationToken = emailVerificationTokenService.findByToken(existingToken)
+                .orElseThrow(() -> new ResourceNotFoundException("Token " + existingToken + " not found"));
+
+        if (emailVerificationToken.getUser().isEnabled()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(emailVerificationTokenService.updateExistingTokenWithNameAndExpiry(emailVerificationToken));
+    }
 
 
 }

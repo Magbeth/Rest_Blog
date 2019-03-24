@@ -1,10 +1,10 @@
-package gatsko.blog.model.DTO;
+package gatsko.blog.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import gatsko.blog.model.Article;
-import gatsko.blog.model.ArticleStatus;
+import gatsko.blog.model.enums.ArticleStatus;
 import gatsko.blog.model.Tag;
 import gatsko.blog.utils.JsonDateDeserializer;
 import gatsko.blog.utils.JsonDateSerializer;

@@ -5,6 +5,7 @@ import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.exception.ResourceAlreadyInUseException;
 import gatsko.blog.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,14 +30,14 @@ public class WebRestControllerAdvice {
 
     @ExceptionHandler(InvalidTokenRequestException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ExceptionResponse handleTokenRequestException(InvalidTokenRequestException ex) {
-        return new ExceptionResponse(ex.getMessage());
+    public void handleTokenRequestException(InvalidTokenRequestException ex) {
+        ExceptionResponse response = new ExceptionResponse(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleIllegalArgumentException(IllegalArgumentException ex) {
-        return new ExceptionResponse(ex.getMessage());
+    public ExceptionResponse handleIllegalArgumentException(Exception ex) {
+        return new ExceptionResponse(ex.getCause().getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -49,6 +50,18 @@ public class WebRestControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleAccessControlException(AccessControlException ex) {
         return new ExceptionResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionResponse handleAccessDeniedException(AccessDeniedException ex) {
+        return new ExceptionResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ExceptionResponse handleRuntimeException(RuntimeException ex) {
+        return new ExceptionResponse(ex.getMessage() + " ====FROM RUNTIME HANDLER==== " + ex.getClass());
     }
 
 }
