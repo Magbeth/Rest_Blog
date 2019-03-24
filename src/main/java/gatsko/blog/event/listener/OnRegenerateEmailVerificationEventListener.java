@@ -13,12 +13,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OnRegenerateEmailVerificationEventListener implements ApplicationListener<OnRegenerateEmailVerificationEvent> {
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private MailSender mailSender;
-    @Autowired
-    private MailService mailService;
+    private final MessageSource messageSource;
+    private final MailSender mailSender;
+    private final MailService mailService;
+
+    public OnRegenerateEmailVerificationEventListener(MailService mailService, MessageSource messageSource,
+                                                      MailSender mailSender) {
+        this.mailSender = mailSender;
+        this.mailService = mailService;
+        this.messageSource = messageSource;
+    }
 
     @Override
     @Async
@@ -30,15 +34,11 @@ public class OnRegenerateEmailVerificationEventListener implements ApplicationLi
         User user = event.getUser();
         String token = event.getToken();
         String subject = "Registration Confirmation";
-//        String recipientAddress = user.getEmail();
         String confirmationUrl
                 = event.getRedirectUrl() + "/registrationConfirm.html?token=" + token;
         String message = messageSource.getMessage("Thank you for registering. Please click on the below link to activate your account. ", null, event.getLocale());
         String mailBody = message + "http://localhost:8080/auth" + confirmationUrl;
         SimpleMailMessage email = mailService.constructEmail(subject, mailBody, user.getEmail());
-//        email.setTo(recipientAddress);
-//        email.setSubject(subject);
-//        email.setText(message + "http://localhost:8080/auth" + confirmationUrl);
         mailSender.send(email);
     }
 }

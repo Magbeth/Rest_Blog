@@ -1,6 +1,5 @@
 package gatsko.blog.service;
 
-import gatsko.blog.model.User;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 

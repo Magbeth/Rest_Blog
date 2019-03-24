@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OnUserRegistrationCompleteEventListener implements ApplicationListener<OnUserRegistrationCompleteEvent> {
-    private EmailVerificationTokenService emailVerificationTokenService;
-    private MessageSource messageSource;
-    private MailSender mailSender;
-    private MailService mailService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
+    private final MessageSource messageSource;
+    private final MailSender mailSender;
+    private final MailService mailService;
 
     public OnUserRegistrationCompleteEventListener(EmailVerificationTokenService emailVerificationTokenService,
                                            MessageSource messageSource, MailSender mailSender,
@@ -43,15 +43,11 @@ public class OnUserRegistrationCompleteEventListener implements ApplicationListe
         emailVerificationTokenService.createVerificationToken(user, token);
 
         String subject = "Registration Confirmation";
-//        String recipientAddress = user.getEmail();
         String confirmationUrl
                 = event.getRedirectUrl() + "/registrationConfirm.html?token=" + token;
         String message = messageSource.getMessage("Thank you for registering. Please click on the below link to activate your account. ", null, event.getLocale());
         String mailBody = message + "http://localhost:8080/auth" + confirmationUrl;
         SimpleMailMessage email = mailService.constructEmail(subject, mailBody, user.getEmail());
-//        email.setTo(recipientAddress);
-//        email.setSubject(subject);
-//        email.setText(message + "http://localhost:8080/auth" + confirmationUrl);
         mailSender.send(email);
     }
 }

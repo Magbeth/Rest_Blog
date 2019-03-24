@@ -60,7 +60,9 @@ public class CommentsController {
     //                    =================================
     //                       utility logic. to be replaced
     //                    =================================
-    enum CommentProperties {createdAt, id}
+    enum CommentProperties {
+        createdAt, id
+    }
 
     private Sort createSortRequest(String order, String properties) {
         //Splitting passed properties to array and removing invalid properties

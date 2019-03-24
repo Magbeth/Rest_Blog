@@ -1,12 +1,10 @@
 package gatsko.blog.service;
 
-import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.Token.EmailVerificationToken;
 import gatsko.blog.model.Token.TokenStatus;
 import gatsko.blog.model.User;
 import gatsko.blog.repository.EmailVerificationTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,11 @@ import java.util.UUID;
 
 @Service
 public class EmailVerificationTokenService {
-    @Autowired
-    private EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+
+    public EmailVerificationTokenService(EmailVerificationTokenRepository emailVerificationTokenRepository) {
+        this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+    }
 
     @Value("${app.token.email.verification.duration}")
     private Long emailVerificationTokenExpiryDuration;
@@ -36,10 +37,7 @@ public class EmailVerificationTokenService {
     }
 
     public boolean isTokenExpiry(EmailVerificationToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-            return true;
-        }
-        else return false;
+        return token.getExpiryDate().compareTo(Instant.now()) < 0;
     }
 
     public EmailVerificationToken save(EmailVerificationToken emailVerificationToken) {

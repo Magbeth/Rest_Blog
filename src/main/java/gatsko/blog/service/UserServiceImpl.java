@@ -22,18 +22,18 @@ import java.util.Set;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
+    private final UsersRepository usersRepository;
+    private final PasswordResetTokenService passwordResetTokenService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @Autowired
-    private PasswordResetTokenService passwordResetTokenService;
+    public UserServiceImpl(PasswordEncoder passwordEncoder, RoleService roleService,
+                           UsersRepository usersRepository, PasswordResetTokenService passwordResetTokenService) {
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+        this.usersRepository = usersRepository;
+        this.passwordResetTokenService = passwordResetTokenService;
+    }
 
     @Override
     public User findByEmail(String email) {

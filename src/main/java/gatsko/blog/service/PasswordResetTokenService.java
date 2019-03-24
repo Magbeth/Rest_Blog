@@ -1,6 +1,5 @@
 package gatsko.blog.service;
 
-import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.repository.PasswordTokenRepository;

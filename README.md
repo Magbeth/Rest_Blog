@@ -1,6 +1,6 @@
 # Spring_blog_LeverX_lab
-Practice Spring project for LeverX labs
-Simple REST blog with article and comment view and adding. Articles can be searched by tags. TagCloud counts articles numder with specified tag.
+Practice Spring project for LeverX labs.
+Simple REST blog with article and comment view and adding. Articles can be searched by tags. TagCloud counts articles number with specified tag.
 
 Authorization passes through JWT tokens.
 
@@ -18,19 +18,20 @@ and <a href = https://www.toptal.com/java/rest-security-with-jwt-spring-security
 - Get articles with specified tags (TODO: get only public articles for non-authenticated users)
 - Get articles number with specified tag (Tag-cloud)
 
- <b> TODO:</b> checking/exception handling caused by article not found and etc.
-
-#Comment controller
+# Comment controller
 - Show all comments for specified article
 - Show specified comment for specified article
 - Post new comment (Only for authenticated user)
 - Delete comment (Only for article author or comment author)
-<b> TODO:</b> checking/exception handling caused by comment not found and etc.
 
-#Authentication/Authorization controller
+# Authentication/Authorization controller
 - Registry new user
 - login user with generation of Jwt Token for requests authorization;
-<b> TODO:</b> checking/exception handling caused by user not found, username/email already exists and etc.
+- Sending activation link to email after registration
+- Resending activation link
+- Reset password request. Sending token for resetting to email.
+
+# Global exception handler
 
 <b>TODO:</b> Fix hibernate.enable_lazy_load_no_trans anti-pattern. 
 

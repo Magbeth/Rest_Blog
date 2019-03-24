@@ -13,7 +13,6 @@ import gatsko.blog.service.ApiInterface.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,16 +21,14 @@ import java.util.Optional;
 public class AuthService {
     private final UserService userService;
     private final JwtProvider tokenProvider;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationTokenService emailVerificationTokenService;
 
     public AuthService(UserService userService, JwtProvider tokenProvider,
-                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
+                       AuthenticationManager authenticationManager,
                        EmailVerificationTokenService emailVerificationTokenService) {
         this.userService = userService;
         this.tokenProvider = tokenProvider;
-        this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.emailVerificationTokenService = emailVerificationTokenService;
     }
