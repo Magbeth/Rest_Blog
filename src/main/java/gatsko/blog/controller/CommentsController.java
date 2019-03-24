@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class CommentsController {
     @PostMapping(value = "articles/{articleId}/comments")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Comment createComment(@PathVariable("articleId") Long articleId, Comment comment) {
+    public Comment createComment(@PathVariable("articleId") Long articleId, @Valid @RequestBody Comment comment) {
         return commentService.saveNewComment(comment, articleId);
     }
 

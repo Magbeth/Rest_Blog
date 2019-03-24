@@ -6,6 +6,7 @@ import gatsko.blog.exception.ResourceAlreadyInUseException;
 import gatsko.blog.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -55,6 +56,12 @@ public class WebRestControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ExceptionResponse handleAccessDeniedException(AccessDeniedException ex) {
+        return new ExceptionResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionResponse handleDisabledException(DisabledException ex) {
         return new ExceptionResponse(ex.getMessage());
     }
 

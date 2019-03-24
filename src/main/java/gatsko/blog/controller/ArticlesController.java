@@ -44,7 +44,7 @@ public class ArticlesController {
     @PostMapping(value = "/articles")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ArticleDTO createArticle(ArticleDTO article) {
+    public ArticleDTO createArticle(@Valid @RequestBody ArticleDTO article) {
         return articleService.saveNewArticle(article);
     }
 
@@ -83,7 +83,7 @@ public class ArticlesController {
     @PutMapping(value = "articles/{articleId}")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.OK)
-    public ArticleDTO editArticle(@Valid ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
+    public ArticleDTO editArticle(@Valid @RequestBody ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
         Article articleToEdit = articleService.getArticle(articleId);
         return articleService.updateArticle(articleToEdit, editedData);
     }

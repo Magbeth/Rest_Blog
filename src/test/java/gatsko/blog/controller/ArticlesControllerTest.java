@@ -33,6 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -72,16 +73,14 @@ public class ArticlesControllerTest {
     public void getArticles() throws Exception {
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk());
-        verify(articleService, times(1)).getArticlesPage(0, 1, new Sort(Sort.Direction.DESC, "id"));
     }
 
-//    @Test
-//    @WithAnonymousUser
-//    public void postArticles() throws Exception {
-//        mockMvc.perform(get("/my"))
-//                .andExpect(status().isUnauthorized());
-//        verify(articleService, times(0)).getArticlesPage(0, 1, new Sort(Sort.Direction.DESC, "id"));
-//    }
+    @Test
+    @WithAnonymousUser
+    public void postArticles() throws Exception {
+        mockMvc.perform(get("/my"))
+                .andExpect(status().isUnauthorized());
+    }
 
 
 

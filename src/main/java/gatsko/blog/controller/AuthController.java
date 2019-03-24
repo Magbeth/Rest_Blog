@@ -45,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUser(@Valid RegistrationRequest registrationRequest, WebRequest request) {
+    public void registerUser(@Valid @RequestBody RegistrationRequest registrationRequest, WebRequest request) {
         Optional<User> registeredUserOpt = authService.registerUser(registrationRequest);
         registeredUserOpt.orElseThrow(RuntimeException::new);
         String appUrl = request.getContextPath();

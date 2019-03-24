@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.validation.Valid;
+
 @RestController
 public class UsersController {
 
@@ -29,7 +31,7 @@ public class UsersController {
 
     @PostMapping("auth/forgotPassword")
     @ResponseStatus(value = HttpStatus.OK)
-    public void resetPasswordLink(@RequestBody PasswordResetLinkRequest passwordResetLinkRequest, WebRequest request) {
+    public void resetPasswordLink(@Valid @RequestBody PasswordResetLinkRequest passwordResetLinkRequest, WebRequest request) {
         String email = passwordResetLinkRequest.getEmail();
         OnPasswordLinkRequestEvent onPasswordLinkRequestEvent =
                 new OnPasswordLinkRequestEvent(request.getContextPath(), email, request.getLocale());
@@ -39,7 +41,7 @@ public class UsersController {
     //TODO: Add email notification here
     @PostMapping("auth/resetPassword")
     @ResponseStatus(value = HttpStatus.OK)
-    public void resetPassword(@RequestBody PasswordResetRequest passwordResetRequest, WebRequest webRequest) {
+    public void resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest, WebRequest webRequest) {
         userService.resetPassword(passwordResetRequest);
     }
 
