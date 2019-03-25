@@ -9,6 +9,8 @@ import gatsko.blog.model.dto.LoginRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
 import gatsko.blog.model.User;
 import gatsko.blog.security.JwtProvider;
+import gatsko.blog.service.apiInterface.AuthService;
+import gatsko.blog.service.apiInterface.EmailVerificationTokenService;
 import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,21 +20,22 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final JwtProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationTokenService emailVerificationTokenService;
 
-    public AuthService(UserService userService, JwtProvider tokenProvider,
-                       AuthenticationManager authenticationManager,
-                       EmailVerificationTokenService emailVerificationTokenService) {
+    public AuthServiceImpl(UserService userService, JwtProvider tokenProvider,
+                           AuthenticationManager authenticationManager,
+                           EmailVerificationTokenService emailVerificationTokenService) {
         this.userService = userService;
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.emailVerificationTokenService = emailVerificationTokenService;
     }
 
+    @Override
     public Optional<User> registerUser(RegistrationRequest newRegistrationRequest) {
         String newRegistrationRequestEmail = newRegistrationRequest.getEmail();
         if (emailAlreadyExists(newRegistrationRequestEmail)) {
@@ -55,15 +58,18 @@ public class AuthService {
         return userService.usernameExists(username);
     }
 
+    @Override
     public Optional<Authentication> authenticateUser(LoginRequest loginRequest) {
         return Optional.ofNullable(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword())));
     }
 
+    @Override
     public String generateToken(CustomUserDetails customUserDetails) {
         return tokenProvider.generateJwtToken(customUserDetails);
     }
 
+    @Override
     public Optional<User> confirmEmailRegistrationWithRedis(String emailToken) {
         Optional<User> user =
                 emailVerificationTokenService.findUserByToken(emailToken);
@@ -74,6 +80,7 @@ public class AuthService {
         return user;
     }
 
+    @Override
     public String generateNewTokenForUserEmail(String email) {
         String token = emailVerificationTokenService.generateNewToken();
         User registeredUser = Optional.ofNullable(userService.findByEmail(email))

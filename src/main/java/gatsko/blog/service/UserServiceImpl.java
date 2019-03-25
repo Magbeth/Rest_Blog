@@ -6,6 +6,8 @@ import gatsko.blog.model.*;
 import gatsko.blog.model.dto.PasswordResetRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
 import gatsko.blog.repository.UsersRepository;
+import gatsko.blog.service.apiInterface.PasswordResetTokenService;
+import gatsko.blog.service.apiInterface.RoleService;
 import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

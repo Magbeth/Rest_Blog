@@ -2,8 +2,8 @@ package gatsko.blog.event.listener;
 
 import gatsko.blog.event.OnUserRegistrationCompleteEvent;
 import gatsko.blog.model.User;
-import gatsko.blog.service.EmailVerificationTokenService;
 import gatsko.blog.service.MailService;
+import gatsko.blog.service.apiInterface.EmailVerificationTokenService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
@@ -18,8 +18,8 @@ public class OnUserRegistrationCompleteEventListener implements ApplicationListe
     private final MailService mailService;
 
     public OnUserRegistrationCompleteEventListener(EmailVerificationTokenService emailVerificationTokenService,
-                                           MessageSource messageSource, MailSender mailSender,
-                                           MailService mailService) {
+                                                   MessageSource messageSource, MailSender mailSender,
+                                                   MailService mailService) {
         this.mailSender = mailSender;
         this.emailVerificationTokenService = emailVerificationTokenService;
         this.mailService = mailService;

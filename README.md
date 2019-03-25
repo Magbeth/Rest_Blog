@@ -11,19 +11,21 @@ and <a href = https://www.toptal.com/java/rest-security-with-jwt-spring-security
 # Implemented features:
 #
 # Article controller:
-- Get all articles (TODO: Get only public articles for non-authenticated users)
+- Get all articles (For non-auth users only public articles)
 - Get article by Id
 - Post new article (Only for authenticated user)
 - Delete article (Only for article author)
 - Update article with new data (Only for article author)
-- Get articles with specified tags (TODO: get only public articles for non-authenticated users)
+- Get articles with specified tags 
 - Get articles number with specified tag (Tag-cloud)
+- Pagination and sorting
 #
 # Comment controller
 - Show all comments for specified article
 - Show specified comment for specified article
 - Post new comment (Only for authenticated user)
 - Delete comment (Only for article author or comment author)
+- Pagination and sorting
 #
 # Authentication/Authorization controller
 - Registry new user
@@ -31,6 +33,7 @@ and <a href = https://www.toptal.com/java/rest-security-with-jwt-spring-security
 - Sending activation link to email after registration
 - Resending activation link
 - Reset password request. Sending token for resetting to email.
+- Registration and password reset token are saved in Redis and deleted after expiry
 #
 # Global exception handler
 #

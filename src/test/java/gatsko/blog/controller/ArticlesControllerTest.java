@@ -52,7 +52,6 @@ public class ArticlesControllerTest {
     public void setUp() {
         Mockito.reset(articleService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(jwtAuthTokenFilter)
                 .apply(springSecurity())
                 .build();
     }

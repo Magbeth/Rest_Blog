@@ -10,7 +10,7 @@ import gatsko.blog.model.dto.JwtAuthenticationResponse;
 import gatsko.blog.model.dto.LoginRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
 import gatsko.blog.security.JwtProvider;
-import gatsko.blog.service.AuthService;
+import gatsko.blog.service.apiInterface.AuthService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
