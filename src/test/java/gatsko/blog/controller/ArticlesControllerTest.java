@@ -1,39 +1,31 @@
 package gatsko.blog.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gatsko.blog.config.JpaConfiguration;
 import gatsko.blog.config.SecurityConfig;
 import gatsko.blog.config.WebConfig;
-import gatsko.blog.model.User;
+import gatsko.blog.model.dto.LoginRequest;
 import gatsko.blog.security.JwtAuthTokenFilter;
-import gatsko.blog.service.ApiInterface.ArticleService;
+import gatsko.blog.service.apiInterface.ArticleService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.nio.charset.Charset;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -41,10 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {TestContext.class, WebConfig.class, JpaConfiguration.class, SecurityConfig.class})
 @WebAppConfiguration
 public class ArticlesControllerTest {
-    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8")
-    );
     @Test
     public void contextLoads() {
     }
@@ -65,6 +53,7 @@ public class ArticlesControllerTest {
         Mockito.reset(articleService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(jwtAuthTokenFilter)
+                .apply(springSecurity())
                 .build();
     }
 
@@ -77,15 +66,38 @@ public class ArticlesControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void postArticles() throws Exception {
+    public void getUserArticles() throws Exception {
         mockMvc.perform(get("/my"))
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    @WithUserDetails("111111")
+    public void getAuthUserArticles() throws Exception {
+        mockMvc.perform(get("/my"))
+                .andExpect(status().isOk());
+    }
 
 
+    @Test
+    @WithAnonymousUser
+    public void deleteArticleWithAnonymousUser() throws  Exception {
+        mockMvc.perform(delete("/articles/76"))
+                .andExpect(status().isUnauthorized());
+    }
 
 
+    @Test
+    @WithAnonymousUser
+    public void successfulAuthenticationWithAnonymousUser() throws Exception {
+
+        LoginRequest loginRequest = new LoginRequest("555555", "123456");
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(loginRequest)))
+                .andExpect(status().is2xxSuccessful());
+    }
 
 
 }

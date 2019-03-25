@@ -3,7 +3,7 @@ package gatsko.blog.event.listener;
 import gatsko.blog.event.OnPasswordLinkRequestEvent;
 import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.service.MailService;
-import gatsko.blog.service.ApiInterface.UserService;
+import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
@@ -27,17 +27,16 @@ public class OnPasswordLinkRequestEventListener implements ApplicationListener<O
     }
 
     @Override
-    @Async
     public void onApplicationEvent(OnPasswordLinkRequestEvent event) {
         sendResetLink(event);
     }
 
     private void sendResetLink(OnPasswordLinkRequestEvent event) {
         String email = event.getEmail();
-        PasswordResetToken token = userService.generatePasswordResetToken(email);
+        String token = userService.generatePasswordResetToken(email);
         String subject = "Password reset";
         String confirmationUrl
-                = event.getRedirectUrl() + "/auth/resetPassword.html?token=" + token.getToken();
+                = event.getRedirectUrl() + "/auth/resetPassword.html?token=" + token;
         String message = messageSource.getMessage("Please click on the below link to reset your password. ", null, event.getLocale());
         String mailBody = message + "http://localhost:8080" + confirmationUrl;
         SimpleMailMessage resetEmail = mailService.constructEmail(subject, mailBody, email);

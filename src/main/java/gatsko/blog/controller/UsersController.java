@@ -3,7 +3,7 @@ package gatsko.blog.controller;
 import gatsko.blog.event.OnPasswordLinkRequestEvent;
 import gatsko.blog.model.dto.PasswordResetLinkRequest;
 import gatsko.blog.model.dto.PasswordResetRequest;
-import gatsko.blog.service.ApiInterface.UserService;
+import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class UsersController {
 
     @PostMapping("auth/forgotPassword")
     @ResponseStatus(value = HttpStatus.OK)
-    public void resetPasswordLink(@Valid @RequestBody PasswordResetLinkRequest passwordResetLinkRequest, WebRequest request) {
+    public void resetPasswordRequestLink(@Valid @RequestBody PasswordResetLinkRequest passwordResetLinkRequest, WebRequest request) {
         String email = passwordResetLinkRequest.getEmail();
         OnPasswordLinkRequestEvent onPasswordLinkRequestEvent =
                 new OnPasswordLinkRequestEvent(request.getContextPath(), email, request.getLocale());

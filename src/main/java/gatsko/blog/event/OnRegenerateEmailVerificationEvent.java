@@ -7,14 +7,14 @@ import java.util.Locale;
 
 public class OnRegenerateEmailVerificationEvent extends ApplicationEvent {
     private String redirectUrl;
-    private User user;
+    private String email;
     private String token;
     private Locale locale;
 
-    public OnRegenerateEmailVerificationEvent(User user, String redirectUrl, Locale locale, String token) {
-        super(user);
+    public OnRegenerateEmailVerificationEvent(String email, String redirectUrl, Locale locale, String token) {
+        super(email);
         this.redirectUrl = redirectUrl;
-        this.user = user;
+        this.email = email;
         this.locale = locale;
         this.token = token;
     }
@@ -27,12 +27,12 @@ public class OnRegenerateEmailVerificationEvent extends ApplicationEvent {
         this.redirectUrl = redirectUrl;
     }
 
-    public User getUser() {
-        return user;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getToken() {

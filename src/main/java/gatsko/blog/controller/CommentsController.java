@@ -2,8 +2,8 @@ package gatsko.blog.controller;
 
 import gatsko.blog.model.Article;
 import gatsko.blog.model.Comment;
-import gatsko.blog.service.ApiInterface.ArticleService;
-import gatsko.blog.service.ApiInterface.CommentService;
+import gatsko.blog.service.apiInterface.ArticleService;
+import gatsko.blog.service.apiInterface.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;

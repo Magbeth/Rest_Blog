@@ -1,4 +1,4 @@
-package gatsko.blog.service.ApiInterface;
+package gatsko.blog.service.apiInterface;
 
 import gatsko.blog.model.Article;
 import gatsko.blog.model.Comment;

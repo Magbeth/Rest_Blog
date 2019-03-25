@@ -8,6 +8,7 @@ import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "blog_user")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

@@ -1,9 +1,6 @@
 package gatsko.blog.controller;
 
-import gatsko.blog.exception.ExceptionResponse;
-import gatsko.blog.exception.InvalidTokenRequestException;
-import gatsko.blog.exception.ResourceAlreadyInUseException;
-import gatsko.blog.exception.ResourceNotFoundException;
+import gatsko.blog.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.DisabledException;
@@ -29,6 +26,7 @@ public class WebRestControllerAdvice {
         return new ExceptionResponse(ex.getMessage());
     }
 
+    //TODO: This handler finished with 500 eternal error then use ExceptionResponse in return.
     @ExceptionHandler(InvalidTokenRequestException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public void handleTokenRequestException(InvalidTokenRequestException ex) {
@@ -62,6 +60,18 @@ public class WebRestControllerAdvice {
     @ExceptionHandler(DisabledException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse handleDisabledException(DisabledException ex) {
+        return new ExceptionResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyActivatedException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ExceptionResponse handleUserAlreadyActivatedException(UserAlreadyActivatedException ex) {
+        return new ExceptionResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(PasswordResetException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ExceptionResponse handlePasswordResetException(PasswordResetException ex) {
         return new ExceptionResponse(ex.getMessage());
     }
 

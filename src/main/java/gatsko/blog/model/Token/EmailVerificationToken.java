@@ -7,13 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "email_verification_token")
-public class EmailVerificationToken {
+public class EmailVerificationToken implements Serializable {
     @Id
     @Column(name = "token_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

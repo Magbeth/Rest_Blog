@@ -70,7 +70,7 @@ public class AuthController {
     @GetMapping("/registrationConfirm")
     @ResponseStatus(value = HttpStatus.OK)
     public void confirmRegistration(@RequestParam("token") String token) {
-        Optional<User> verifiedUserOpt = authService.confirmEmailRegistration(token);
+        Optional<User> verifiedUserOpt = authService.confirmEmailRegistrationWithRedis(token);
         verifiedUserOpt.orElseThrow(() -> new InvalidTokenRequestException("Email Verification Token" + token +
                 "Failed to confirm. Please generate a new email verification request"));
     }
@@ -78,13 +78,14 @@ public class AuthController {
     @GetMapping("/resendRegistrationToken")
     @ResponseStatus(value = HttpStatus.OK)
     public void resendVerification(@RequestParam("email") String email, WebRequest request) {
-        EmailVerificationToken existingToken = emailVerificationTokenService.findByUserEmail(email);
-        EmailVerificationToken newToken = authService.recreateRegistrationToken(existingToken.getToken())
-                .orElseThrow(() -> new InvalidTokenRequestException("User is already registered"));
-        User registeredUser = newToken.getUser();
+//        EmailVerificationToken existingToken = emailVerificationTokenService.findByUserEmail(email);
+//        EmailVerificationToken newToken = authService.recreateRegistrationToken(existingToken.getToken())
+//                .orElseThrow(() -> new InvalidTokenRequestException("User is already registered"));
+//        User registeredUser = newToken.getUser();
+        String newToken = authService.generateNewTokenForUserEmail(email);
         String appUrl = request.getContextPath();
         OnRegenerateEmailVerificationEvent onRegenerateEmailVerificationEvent =
-                new OnRegenerateEmailVerificationEvent(registeredUser, appUrl, request.getLocale(), newToken.getToken());
+                new OnRegenerateEmailVerificationEvent(email, appUrl, request.getLocale(), newToken);
         applicationEventPublisher.publishEvent(onRegenerateEmailVerificationEvent);
     }
 }

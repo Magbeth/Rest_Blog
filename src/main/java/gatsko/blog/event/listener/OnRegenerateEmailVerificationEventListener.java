@@ -31,14 +31,14 @@ public class OnRegenerateEmailVerificationEventListener implements ApplicationLi
     }
 
     private void sendRegeneratedToken(OnRegenerateEmailVerificationEvent event) {
-        User user = event.getUser();
+        String email = event.getEmail();
         String token = event.getToken();
         String subject = "Registration Confirmation";
         String confirmationUrl
                 = event.getRedirectUrl() + "/registrationConfirm.html?token=" + token;
         String message = messageSource.getMessage("Thank you for registering. Please click on the below link to activate your account. ", null, event.getLocale());
         String mailBody = message + "http://localhost:8080/auth" + confirmationUrl;
-        SimpleMailMessage email = mailService.constructEmail(subject, mailBody, user.getEmail());
-        mailSender.send(email);
+        SimpleMailMessage emailMessage = mailService.constructEmail(subject, mailBody, email);
+        mailSender.send(emailMessage);
     }
 }

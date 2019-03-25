@@ -1,4 +1,4 @@
-package gatsko.blog.service.ApiInterface;
+package gatsko.blog.service.apiInterface;
 
 
 import gatsko.blog.model.dto.PasswordResetRequest;
@@ -26,10 +26,10 @@ public interface UserService extends UserDetailsService {
 
     User createUser(RegistrationRequest registrationRequest);
 
-    PasswordResetToken generatePasswordResetToken(String email);
+    String generatePasswordResetToken(String email);
 
     UserDetails loadUserById(Long id);
 
-    Optional<User> resetPassword(PasswordResetRequest passwordResetRequest);
+    void resetPassword(PasswordResetRequest passwordResetRequest);
 
 }

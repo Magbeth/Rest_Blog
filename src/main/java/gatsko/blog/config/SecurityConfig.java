@@ -3,7 +3,7 @@ package gatsko.blog.config;
 
 import gatsko.blog.security.JwtAuthTokenFilter;
 import gatsko.blog.security.JwtAuthenticationEntryPoint;
-import gatsko.blog.service.ApiInterface.UserService;
+import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

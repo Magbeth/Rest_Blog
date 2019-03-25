@@ -1,6 +1,6 @@
 package gatsko.blog.controller;
 
-import gatsko.blog.service.ApiInterface.ArticleService;
+import gatsko.blog.service.apiInterface.ArticleService;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
