@@ -17,7 +17,6 @@ public class TagServiceImpl implements TagService {
     public Tag saveTag(Tag tag) {
         if (tagRepository.findByName(tag.getName()) == null) {
             return tagRepository.saveAndFlush(tag);
-        }
-        else return tagRepository.findByName(tag.getName());
+        } else return tagRepository.findByName(tag.getName());
     }
 }

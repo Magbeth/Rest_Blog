@@ -1,14 +1,11 @@
 package gatsko.blog.event.listener;
 
 import gatsko.blog.event.OnRegenerateEmailVerificationEvent;
-import gatsko.blog.model.User;
 import gatsko.blog.service.MailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +22,6 @@ public class OnRegenerateEmailVerificationEventListener implements ApplicationLi
     }
 
     @Override
-    @Async
     public void onApplicationEvent(OnRegenerateEmailVerificationEvent onRegenerateEmailVerificationEvent) {
         sendRegeneratedToken(onRegenerateEmailVerificationEvent);
     }

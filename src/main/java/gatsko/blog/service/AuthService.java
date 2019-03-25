@@ -64,22 +64,6 @@ public class AuthService {
         return tokenProvider.generateJwtToken(customUserDetails);
     }
 
-//    public Optional<User> confirmEmailRegistration(String emailToken) {
-//        Optional<EmailVerificationToken> emailVerificationTokenOpt =
-//                emailVerificationTokenService.findByToken(emailToken);
-//        emailVerificationTokenOpt.orElseThrow(() ->
-//                new InvalidTokenRequestException("Invalid Token " + emailToken));
-//        Optional<User> registeredUserOpt = emailVerificationTokenOpt.map(EmailVerificationToken::getUser);
-//        if (emailVerificationTokenService.isTokenExpiry(emailVerificationTokenOpt.get())) {
-//            throw new InvalidTokenRequestException("Token expired");
-//        }
-//        emailVerificationTokenOpt.ifPresent(EmailVerificationToken::confirmStatus);
-//        emailVerificationTokenOpt.ifPresent(emailVerificationTokenService::save);
-//        registeredUserOpt.ifPresent(User::confirmVerification);
-//        registeredUserOpt.ifPresent(userService::save);
-//        return registeredUserOpt;
-//    }
-
     public Optional<User> confirmEmailRegistrationWithRedis(String emailToken) {
         Optional<User> user =
                 emailVerificationTokenService.findUserByToken(emailToken);
@@ -90,20 +74,10 @@ public class AuthService {
         return user;
     }
 
-//    public Optional<EmailVerificationToken> recreateRegistrationToken(String existingToken) {
-//        EmailVerificationToken emailVerificationToken = emailVerificationTokenService.findByToken(existingToken)
-//                .orElseThrow(() -> new ResourceNotFoundException("Token " + existingToken + " not found"));
-//
-//        if (emailVerificationToken.getUser().isEnabled()) {
-//            return Optional.empty();
-//        }
-//        return Optional.ofNullable(emailVerificationTokenService.updateExistingTokenWithNameAndExpiry(emailVerificationToken));
-//    }
-
     public String generateNewTokenForUserEmail(String email) {
         String token = emailVerificationTokenService.generateNewToken();
         User registeredUser = Optional.ofNullable(userService.findByEmail(email))
-                .orElseThrow(()->new ResourceNotFoundException("User with email " + email + " not exists"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not exists"));
         if (registeredUser.isEnabled()) {
             throw new UserAlreadyActivatedException("User with email " + email + " already activated");
         }

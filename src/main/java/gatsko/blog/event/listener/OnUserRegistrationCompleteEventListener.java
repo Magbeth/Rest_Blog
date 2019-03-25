@@ -4,12 +4,10 @@ import gatsko.blog.event.OnUserRegistrationCompleteEvent;
 import gatsko.blog.model.User;
 import gatsko.blog.service.EmailVerificationTokenService;
 import gatsko.blog.service.MailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component

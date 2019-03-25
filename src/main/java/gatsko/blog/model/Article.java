@@ -72,6 +72,7 @@ public class Article {
         this.tags = articleDTO.getTags();
         this.status = articleDTO.getStatus();
     }
+
     public boolean isPublic() {
         return this.status == ArticleStatus.PUBLIC;
     }

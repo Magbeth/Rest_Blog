@@ -23,12 +23,6 @@ public class UsersController {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-//    @RequestMapping(path = "/users", method = RequestMethod.GET)
-//    public User getUsersByFirstName(@RequestParam(name = "username") String username) {
-//        User user = userService.findByUsername(username);
-//        return user;
-//    }
-
     @PostMapping("auth/forgotPassword")
     @ResponseStatus(value = HttpStatus.OK)
     public void resetPasswordRequestLink(@Valid @RequestBody PasswordResetLinkRequest passwordResetLinkRequest, WebRequest request) {

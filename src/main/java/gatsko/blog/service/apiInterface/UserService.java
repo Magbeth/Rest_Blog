@@ -3,12 +3,9 @@ package gatsko.blog.service.apiInterface;
 
 import gatsko.blog.model.dto.PasswordResetRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
-import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
 

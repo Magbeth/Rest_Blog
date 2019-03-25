@@ -1,14 +1,12 @@
 package gatsko.blog.event.listener;
 
 import gatsko.blog.event.OnPasswordLinkRequestEvent;
-import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.service.MailService;
 import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component

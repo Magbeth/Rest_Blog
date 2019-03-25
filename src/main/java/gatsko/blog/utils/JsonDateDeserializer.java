@@ -14,7 +14,7 @@ public class JsonDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException{
+            throws IOException {
         ObjectCodec oc = jp.getCodec();
         TextNode node = oc.readTree(jp);
         String dateString = node.textValue();

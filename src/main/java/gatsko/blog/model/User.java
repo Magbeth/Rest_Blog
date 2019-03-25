@@ -74,7 +74,7 @@ public class User implements Serializable {
         createdAt = user.getCreatedAt();
     }
 
-    public void confirmVerification(){
+    public void confirmVerification() {
         this.enabled = true;
     }
 }

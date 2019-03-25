@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@PropertySource("classpath:/Jwt.properties")
+@PropertySource("classpath:/App.properties")
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Value("${app.jwt.header}")
     private String tokenRequestHeader;

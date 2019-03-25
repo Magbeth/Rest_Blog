@@ -9,10 +9,8 @@ import gatsko.blog.model.*;
 import gatsko.blog.model.dto.JwtAuthenticationResponse;
 import gatsko.blog.model.dto.LoginRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
-import gatsko.blog.model.Token.EmailVerificationToken;
 import gatsko.blog.security.JwtProvider;
 import gatsko.blog.service.AuthService;
-import gatsko.blog.service.EmailVerificationTokenService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +29,12 @@ public class AuthController {
     private final AuthService authService;
     private final JwtProvider tokenProvider;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final EmailVerificationTokenService emailVerificationTokenService;
 
     public AuthController(AuthService authService, JwtProvider jwtProvider,
-                          ApplicationEventPublisher applicationEventPublisher,
-                          EmailVerificationTokenService emailVerificationTokenService) {
+                          ApplicationEventPublisher applicationEventPublisher) {
         this.authService = authService;
         this.tokenProvider = jwtProvider;
         this.applicationEventPublisher = applicationEventPublisher;
-        this.emailVerificationTokenService = emailVerificationTokenService;
 
     }
 
@@ -78,10 +73,6 @@ public class AuthController {
     @GetMapping("/resendRegistrationToken")
     @ResponseStatus(value = HttpStatus.OK)
     public void resendVerification(@RequestParam("email") String email, WebRequest request) {
-//        EmailVerificationToken existingToken = emailVerificationTokenService.findByUserEmail(email);
-//        EmailVerificationToken newToken = authService.recreateRegistrationToken(existingToken.getToken())
-//                .orElseThrow(() -> new InvalidTokenRequestException("User is already registered"));
-//        User registeredUser = newToken.getUser();
         String newToken = authService.generateNewTokenForUserEmail(email);
         String appUrl = request.getContextPath();
         OnRegenerateEmailVerificationEvent onRegenerateEmailVerificationEvent =

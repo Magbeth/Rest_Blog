@@ -27,7 +27,7 @@ public class Tag implements Serializable {
     @ManyToMany(mappedBy = "tags")
     private Collection<Article> articles = new ArrayList<>();
 
-    public Tag (String tagName) {
+    public Tag(String tagName) {
         this.name = tagName;
     }
 }

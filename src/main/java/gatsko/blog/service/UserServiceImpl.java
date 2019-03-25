@@ -5,7 +5,6 @@ import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.*;
 import gatsko.blog.model.dto.PasswordResetRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
-import gatsko.blog.model.Token.PasswordResetToken;
 import gatsko.blog.repository.UsersRepository;
 import gatsko.blog.service.apiInterface.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User currentUser() {
-        return (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @Override
@@ -87,17 +86,16 @@ public class UserServiceImpl implements UserService {
     }
 
     private Set<Role> getRolesForNewUser() {
-        Set<Role> newUserRoles = new HashSet<>(roleService.findAll());
-        return newUserRoles;
+        return new HashSet<>(roleService.findAll());
     }
 
     @Override
-    public boolean emailExists (String email){
+    public boolean emailExists(String email) {
         return usersRepository.existsByEmail(email);
     }
 
     @Override
-    public boolean usernameExists (String username) {
+    public boolean usernameExists(String username) {
         return usersRepository.existsByUsername(username);
     }
 
@@ -107,9 +105,6 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new ResourceNotFoundException("User with email " + email + " not found");
         }
-//        PasswordResetToken passwordResetToken = passwordResetTokenService.createToken();
-//        passwordResetToken.setUser(user);
-//        passwordResetTokenService.save(passwordResetToken);
         String token = UUID.randomUUID().toString();
         passwordResetTokenService.saveTokenToRedis(token, user);
         return token;
@@ -123,15 +118,5 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new PasswordResetException("Password reset link expired"));
         user.setPassword(encodedPassword);
         usersRepository.save(user);
-//        PasswordResetToken passwordResetToken = passwordResetTokenService.findByToken(token)
-//                .orElseThrow(()->new ResourceNotFoundException("Invalid token"));
-//        passwordResetTokenService.verifyExpiration(passwordResetToken);
-//        return Optional.of(passwordResetToken)
-//                .map(PasswordResetToken::getUser)
-//                .map(user -> {
-//                    user.setPassword(encodedPassword);
-//                    usersRepository.save(user);
-//                    return user;
-//                });
     }
 }

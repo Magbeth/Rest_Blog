@@ -138,7 +138,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Long countArticlesWithTag(Collection<String> tags) {
-        return articleRepository.findArticleCountByTag(tags, (long)tags.size());
+        return articleRepository.findArticleCountByTag(tags, (long) tags.size());
     }
 
 }
