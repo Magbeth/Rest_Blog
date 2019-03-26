@@ -113,12 +113,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(PasswordResetRequest passwordResetRequest) {
+    public User resetPassword(PasswordResetRequest passwordResetRequest) {
         String token = passwordResetRequest.getToken();
         String encodedPassword = passwordEncoder.encode(passwordResetRequest.getPassword());
         User user = passwordResetTokenService.findByTokenFromRedis(token)
                 .orElseThrow(() -> new PasswordResetException("Password reset link expired"));
         user.setPassword(encodedPassword);
-        usersRepository.save(user);
+        return usersRepository.save(user);
     }
 }

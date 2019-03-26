@@ -27,6 +27,6 @@ public interface UserService extends UserDetailsService {
 
     UserDetails loadUserById(Long id);
 
-    void resetPassword(PasswordResetRequest passwordResetRequest);
+    User resetPassword(PasswordResetRequest passwordResetRequest);
 
 }

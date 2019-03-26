@@ -1,18 +1,26 @@
 package gatsko.blog.controller;
 
 import gatsko.blog.exception.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.security.AccessControlException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
-public class WebRestControllerAdvice {
+public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -79,6 +87,17 @@ public class WebRestControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ExceptionResponse handleRuntimeException(RuntimeException ex) {
         return new ExceptionResponse(ex.getMessage() + " ====FROM RUNTIME HANDLER==== " + ex.getClass());
+    }
+
+    @Override
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<String> details = new ArrayList<>();
+        for(ObjectError error : ex.getBindingResult().getAllErrors()) {
+            details.add(error.getDefaultMessage());
+        }
+        ExceptionResponse response = new ExceptionResponse(details.toString());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }

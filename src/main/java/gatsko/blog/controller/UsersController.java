@@ -1,6 +1,8 @@
 package gatsko.blog.controller;
 
 import gatsko.blog.event.OnPasswordLinkRequestEvent;
+import gatsko.blog.event.OnPasswordResetNotificationEvent;
+import gatsko.blog.model.User;
 import gatsko.blog.model.dto.PasswordResetLinkRequest;
 import gatsko.blog.model.dto.PasswordResetRequest;
 import gatsko.blog.service.apiInterface.UserService;
@@ -32,11 +34,12 @@ public class UsersController {
         applicationEventPublisher.publishEvent(onPasswordLinkRequestEvent);
     }
 
-    //TODO: Add email notification here
     @PostMapping("auth/resetPassword")
     @ResponseStatus(value = HttpStatus.OK)
     public void resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest, WebRequest webRequest) {
-        userService.resetPassword(passwordResetRequest);
+        User changedUserData = userService.resetPassword(passwordResetRequest);
+        OnPasswordResetNotificationEvent onPasswordResetNotificationEvent = new OnPasswordResetNotificationEvent(changedUserData.getEmail(), webRequest.getLocale());
+        applicationEventPublisher.publishEvent(onPasswordResetNotificationEvent);
     }
 
     //TODO: ADD logOut
