@@ -1,5 +1,6 @@
 package gatsko.blog.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,11 @@ public class WebConfig {
         driver.setUsername("postgres");
         driver.setPassword("00000");
         return driver;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }

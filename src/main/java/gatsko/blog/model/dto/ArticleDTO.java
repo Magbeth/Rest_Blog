@@ -36,15 +36,4 @@ public class ArticleDTO {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime updatedAt;
-
-    public ArticleDTO(Article article) {
-        this.id = article.getId();
-        this.title = article.getFullPostText();
-        this.status = article.getStatus();
-        this.tags = article.getTags();
-        this.createdAt = article.getCreatedAt();
-        this.updatedAt = article.getUpdatedAt();
-    }
-
-
 }

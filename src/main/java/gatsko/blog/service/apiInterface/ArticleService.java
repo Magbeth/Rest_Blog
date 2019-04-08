@@ -16,11 +16,11 @@ public interface ArticleService {
 
     Article getArticle(Long id);
 
-    ArticleDTO getArticleForReading(Long id);
+    Article getArticleForReading(Long id);
 
     Page<Article> findArticleByTag(List<String> tags, int pageNumber, int pageSize, Sort sort);
 
-    ArticleDTO saveNewArticle(ArticleDTO article);
+    Article saveNewArticle(ArticleDTO article);
 
     Long countArticlesWithTag(Collection<String> tags);
 
@@ -30,6 +30,6 @@ public interface ArticleService {
     void deleteArticle(Article article);
 
     @PreAuthorize("#article.user.username == authentication.name")
-    ArticleDTO updateArticle(Article article, ArticleDTO editedArticle);
+    Article updateArticle(Article article, ArticleDTO editedArticle);
 
 }
