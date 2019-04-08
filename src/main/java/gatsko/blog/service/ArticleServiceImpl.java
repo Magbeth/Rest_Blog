@@ -90,13 +90,13 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public Article saveNewArticle(ArticleDTO article) {
-        Article newArticle = new Article(article);
+    public Article saveNewArticle(Article newArticle) {
+//        Article newArticle = new Article(article);
         newArticle.setCreatedAt(LocalDateTime.now());
         newArticle.setUser(userService.currentUser());
-        if (article.getTags() != null) {
+        if (newArticle.getTags() != null) {
             Collection<Tag> articleTags = new ArrayList<>();
-            for (Tag tag : article.getTags()) {
+            for (Tag tag : newArticle.getTags()) {
                 articleTags.add(tagService.saveTag(tag));
             }
             newArticle.setTags(articleTags);

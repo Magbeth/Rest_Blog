@@ -51,7 +51,8 @@ public class ArticlesController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ArticleDTO createArticle(@Valid @RequestBody ArticleDTO article) {
-        Article savedArticle = articleService.saveNewArticle(article);
+        Article newArticle = modelMapper.map(article, Article.class);
+        Article savedArticle = articleService.saveNewArticle(newArticle);
         return modelMapper.map(savedArticle, ArticleDTO.class);
     }
 

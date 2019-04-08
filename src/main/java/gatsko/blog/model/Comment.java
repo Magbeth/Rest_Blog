@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import gatsko.blog.utils.JsonDateDeserializer;
 import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ public class Comment {
     private Long id;
 
     @Column(name = "message", columnDefinition = "text", nullable = false)
-    @NotBlank
     private String commentText;
 
     @JsonSerialize(using = JsonDateSerializer.class)

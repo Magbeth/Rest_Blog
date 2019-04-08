@@ -20,7 +20,7 @@ public interface ArticleService {
 
     Page<Article> findArticleByTag(List<String> tags, int pageNumber, int pageSize, Sort sort);
 
-    Article saveNewArticle(ArticleDTO article);
+    Article saveNewArticle(Article article);
 
     Long countArticlesWithTag(Collection<String> tags);
 
