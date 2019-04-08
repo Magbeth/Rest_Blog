@@ -63,7 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO getArticleForReading(Long id) {
+    public Article getArticleForReading(Long id) {
         Article article = articleRepository.findOne(id);
         if (article == null) {
             throw new ResourceNotFoundException("Article with id " + id + " not found");
@@ -73,7 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
             throw new AccessControlException("You have no permission to view this article. Please, Log in");
         } else {
             Hibernate.initialize(article.getTags());
-            return new ArticleDTO(article);
+            return article;
         }
     }
 
@@ -90,19 +90,18 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public ArticleDTO saveNewArticle(ArticleDTO article) {
-        Article newArticle = new Article(article);
+    public Article saveNewArticle(Article newArticle) {
+//        Article newArticle = new Article(article);
         newArticle.setCreatedAt(LocalDateTime.now());
         newArticle.setUser(userService.currentUser());
-        if (article.getTags() != null) {
+        if (newArticle.getTags() != null) {
             Collection<Tag> articleTags = new ArrayList<>();
-            for (Tag tag : article.getTags()) {
+            for (Tag tag : newArticle.getTags()) {
                 articleTags.add(tagService.saveTag(tag));
             }
             newArticle.setTags(articleTags);
         }
-        articleRepository.saveAndFlush(newArticle);
-        return new ArticleDTO(newArticle);
+        return articleRepository.saveAndFlush(newArticle);
     }
 
     @Transactional
@@ -113,7 +112,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public ArticleDTO updateArticle(Article article, ArticleDTO editedArticle) {
+    public Article updateArticle(Article article, ArticleDTO editedArticle) {
         article.setFullPostText(editedArticle.getFullPostText());
         article.setTitle(editedArticle.getTitle());
         article.setUpdatedAt(LocalDateTime.now());
@@ -126,8 +125,7 @@ public class ArticleServiceImpl implements ArticleService {
             }
             article.setTags(articleTags);
         }
-        Article savedArticle = articleRepository.saveAndFlush(article);
-        return new ArticleDTO(savedArticle);
+        return articleRepository.saveAndFlush(article);
     }
 
     @Override

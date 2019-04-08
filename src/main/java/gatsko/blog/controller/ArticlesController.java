@@ -5,6 +5,7 @@ import gatsko.blog.model.dto.ArticleDTO;
 import gatsko.blog.model.dto.TagCloudResponse;
 import gatsko.blog.service.apiInterface.ArticleService;
 import gatsko.blog.service.apiInterface.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -17,39 +18,46 @@ import java.util.stream.Collectors;
 
 @RestController
 public class ArticlesController {
-    private UserService userService;
+    private final UserService userService;
     private final ArticleService articleService;
+    private final ModelMapper modelMapper;
 
-    public ArticlesController(ArticleService articleService, UserService userService) {
+    public ArticlesController(ArticleService articleService, UserService userService, ModelMapper modelMapper) {
         this.articleService = articleService;
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping(value = "/articles/{articleId}")
     @ResponseStatus(value = HttpStatus.OK)
     public ArticleDTO showArticle(@PathVariable("articleId") Long articleId) {
-        return articleService.getArticleForReading(articleId);
+        Article article = articleService.getArticleForReading(articleId);
+        return modelMapper.map(article, ArticleDTO.class);
     }
 
     @GetMapping(value = "/articles")
     @ResponseStatus(value = HttpStatus.OK)
-    public Page<Article> getPublicArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+    public Page<ArticleDTO> getPublicArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                                                @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
                                                @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
                                                @RequestParam(value = "order", defaultValue = "DESC") String order) {
         Sort sort = createSortRequest(order, properties);
-        return articleService.getArticlesPage(pageNumber, pageSize, sort);
+        Page<Article> articlePage = articleService.getArticlesPage(pageNumber, pageSize, sort);
+        return articlePage.map(article -> modelMapper.map(article, ArticleDTO.class));
+
     }
 
     @PostMapping(value = "/articles")
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ArticleDTO createArticle(@Valid @RequestBody ArticleDTO article) {
-        return articleService.saveNewArticle(article);
+        Article newArticle = modelMapper.map(article, Article.class);
+        Article savedArticle = articleService.saveNewArticle(newArticle);
+        return modelMapper.map(savedArticle, ArticleDTO.class);
     }
 
     @GetMapping(value = "/articles", params = {"tagged"})
-    public Page<Article> searchByTag(@RequestParam("tagged") String tagsStr,
+    public Page<ArticleDTO> searchByTag(@RequestParam("tagged") String tagsStr,
                                      @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                                      @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
                                      @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
@@ -57,7 +65,8 @@ public class ArticlesController {
     ) {
         Sort sort = createSortRequest(order, properties);
         List<String> tagNames = Arrays.stream(tagsStr.split(",")).map(String::trim).map(String::toLowerCase).distinct().collect(Collectors.toList());
-        return articleService.findArticleByTag(tagNames, pageNumber, pageSize, sort);
+        Page<Article> articlePage = articleService.findArticleByTag(tagNames, pageNumber, pageSize, sort);
+        return articlePage.map(article -> modelMapper.map(article, ArticleDTO.class));
     }
 
 
@@ -71,13 +80,14 @@ public class ArticlesController {
 
     @GetMapping(value = "/{username}/articles")
     @ResponseStatus(value = HttpStatus.OK)
-    public Page<Article> getUserArticlesList(@PathVariable("username") String username,
+    public Page<ArticleDTO> getUserArticlesList(@PathVariable("username") String username,
                                              @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                              @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
                                              @RequestParam(value = "order", defaultValue = "DESC") String order) {
         Sort sort = createSortRequest(order, properties);
-        return articleService.getUserArticlesPage(username, pageNumber, pageSize, sort);
+        Page<Article> articlePage = articleService.getUserArticlesPage(username, pageNumber, pageSize, sort);
+        return articlePage.map(article -> modelMapper.map(article, ArticleDTO.class));
     }
 
     @PutMapping(value = "articles/{articleId}")
@@ -85,7 +95,8 @@ public class ArticlesController {
     @ResponseStatus(value = HttpStatus.OK)
     public ArticleDTO editArticle(@Valid @RequestBody ArticleDTO editedData, @PathVariable("articleId") Long articleId) {
         Article articleToEdit = articleService.getArticle(articleId);
-        return articleService.updateArticle(articleToEdit, editedData);
+        Article updatedArticle = articleService.updateArticle(articleToEdit, editedData);
+        return modelMapper.map(updatedArticle, ArticleDTO.class);
     }
 
     @GetMapping(value = "tag-cloud", params = {"tags"})
@@ -99,13 +110,14 @@ public class ArticlesController {
     @GetMapping(value = "/my")
     @ResponseStatus(value = HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
-    public Page<Article> getUserArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+    public Page<ArticleDTO> getUserArticlesList(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                              @RequestParam(value = "sort", defaultValue = "createdAt") String properties,
                                              @RequestParam(value = "order", defaultValue = "DESC") String order) {
         String myUsername = userService.currentUser().getUsername();
         Sort sort = createSortRequest(order, properties);
-        return articleService.getUserArticlesPage(myUsername, pageNumber, pageSize, sort);
+        Page<Article> articlePage = articleService.getUserArticlesPage(myUsername, pageNumber, pageSize, sort);
+        return articlePage.map(article -> modelMapper.map(article, ArticleDTO.class));
     }
 
     //                    =================================

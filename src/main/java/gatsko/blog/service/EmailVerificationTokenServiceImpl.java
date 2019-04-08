@@ -23,7 +23,7 @@ public class EmailVerificationTokenServiceImpl implements EmailVerificationToken
     @Override
     public void createVerificationToken(User user, String token) {
         redisTemplate.opsForValue().set(token, user, keyExpirationInMinutes, TimeUnit.MINUTES);
-        System.out.println("USER FROM REDIS: " + redisTemplate.opsForValue().get(token));
+//        System.out.println("USER FROM REDIS: " + redisTemplate.opsForValue().get(token));
 
     }
 
