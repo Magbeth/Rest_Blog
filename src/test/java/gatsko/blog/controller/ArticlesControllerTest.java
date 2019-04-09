@@ -41,8 +41,8 @@ public class ArticlesControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private ArticleService articleService;
+//    @Autowired
+//    private ArticleService articleService;
 
     @Autowired
     protected JwtAuthTokenFilter jwtAuthTokenFilter;
@@ -50,7 +50,7 @@ public class ArticlesControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(articleService);
+//        Mockito.reset(articleService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();

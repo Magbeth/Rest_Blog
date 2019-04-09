@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TestContext {
-    @Bean
-    public ArticleService articleService() {
-        return Mockito.mock(ArticleService.class);
-    }
+//    @Bean
+//    public ArticleService articleService() {
+//        return Mockito.mock(ArticleService.class);
+//    }
 }
