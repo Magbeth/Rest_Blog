@@ -39,13 +39,9 @@ public class Article {
     @Column(name = "status", nullable = false)
     private ArticleStatus status;
 
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -54,14 +50,12 @@ public class Article {
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     @OrderBy("name ASC")
-    private Collection<Tag> tags = new ArrayList<>();
+    private Collection<Tag> tags;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "article")
     @OrderBy("createdAt ASC")
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     private User user;
