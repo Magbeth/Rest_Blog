@@ -41,6 +41,4 @@ public class UsersController {
         OnPasswordResetNotificationEvent onPasswordResetNotificationEvent = new OnPasswordResetNotificationEvent(changedUserData.getEmail(), webRequest.getLocale());
         applicationEventPublisher.publishEvent(onPasswordResetNotificationEvent);
     }
-
-    //TODO: ADD logOut
 }
