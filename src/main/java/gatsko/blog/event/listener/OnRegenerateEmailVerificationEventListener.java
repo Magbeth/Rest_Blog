@@ -9,7 +9,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OnRegenerateEmailVerificationEventListener implements ApplicationListener<OnRegenerateEmailVerificationEvent> {
+public class OnRegenerateEmailVerificationEventListener
+        implements ApplicationListener<OnRegenerateEmailVerificationEvent> {
     private final MessageSource messageSource;
     private final MailSender mailSender;
     private final MailService mailService;
@@ -32,7 +33,9 @@ public class OnRegenerateEmailVerificationEventListener implements ApplicationLi
         String subject = "Registration Confirmation";
         String confirmationUrl
                 = event.getRedirectUrl() + "/registrationConfirm.html?token=" + token;
-        String message = messageSource.getMessage("Thank you for registering. Please click on the below link to activate your account. ", null, event.getLocale());
+        String message = messageSource
+                .getMessage("Thank you for registering. Please click on the below link to activate your account. ",
+                        null, event.getLocale());
         String mailBody = message + "http://localhost:8080/auth" + confirmationUrl;
         SimpleMailMessage emailMessage = mailService.constructEmail(subject, mailBody, email);
         mailSender.send(emailMessage);

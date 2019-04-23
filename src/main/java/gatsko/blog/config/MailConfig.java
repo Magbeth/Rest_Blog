@@ -27,9 +27,6 @@ public class MailConfig {
     @Value("${spring.mail.password}")
     private String mailPassword;
 
-//    @Value("${spring.mail.port}")
-//    private Integer mailPort;
-
     @Value("${spring.mail.protocol}")
     private String mailProtocol;
 

@@ -8,7 +8,8 @@ import java.util.List;
 public class TagCloudResponse {
     private List<String> tagName;
     private Long articleCount;
-    public TagCloudResponse (List<String> tagName, Long articleCount) {
+
+    public TagCloudResponse(List<String> tagName, Long articleCount) {
         this.tagName = tagName;
         this.articleCount = articleCount;
     }

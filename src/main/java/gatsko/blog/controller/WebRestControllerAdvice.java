@@ -36,7 +36,7 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     //TODO: This handler finished with 500 eternal error then use ExceptionResponse in return.
     @ExceptionHandler(InvalidTokenRequestException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public void handleTokenRequestException(InvalidTokenRequestException ex) {
         ExceptionResponse response = new ExceptionResponse(ex.getMessage());
     }
@@ -85,17 +85,19 @@ public class WebRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ExceptionResponse handleRuntimeException(RuntimeException ex) {
+    public ExceptionResponse handleRuntimeException(Exception ex) {
         return new ExceptionResponse(ex.getMessage() + " ====FROM RUNTIME HANDLER==== " + ex.getClass());
     }
 
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                HttpHeaders headers, HttpStatus status, WebRequest request) {
+                                                               HttpHeaders headers, HttpStatus status,
+                                                               WebRequest request) {
         List<String> details = new ArrayList<>();
-        for(ObjectError error : ex.getBindingResult().getAllErrors()) {
+        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
             details.add(error.getDefaultMessage());
         }
+
         ExceptionResponse response = new ExceptionResponse(details.toString());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

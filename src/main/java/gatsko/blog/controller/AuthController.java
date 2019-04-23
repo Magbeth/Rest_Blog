@@ -3,9 +3,9 @@ package gatsko.blog.controller;
 
 import gatsko.blog.event.OnRegenerateEmailVerificationEvent;
 import gatsko.blog.event.OnUserRegistrationCompleteEvent;
-import gatsko.blog.exception.InvalidTokenRequestException;
 import gatsko.blog.exception.UserLoginException;
-import gatsko.blog.model.*;
+import gatsko.blog.model.CustomUserDetails;
+import gatsko.blog.model.User;
 import gatsko.blog.model.dto.JwtAuthenticationResponse;
 import gatsko.blog.model.dto.LoginRequest;
 import gatsko.blog.model.dto.RegistrationRequest;
@@ -66,8 +66,6 @@ public class AuthController {
     @ResponseStatus(value = HttpStatus.OK)
     public void confirmRegistration(@RequestParam("token") String token) {
         Optional<User> verifiedUserOpt = authService.confirmEmailRegistrationWithRedis(token);
-        verifiedUserOpt.orElseThrow(() -> new InvalidTokenRequestException("Email Verification Token" + token +
-                "Failed to confirm. Please generate a new email verification request"));
     }
 
     @GetMapping("/resendRegistrationToken")

@@ -56,16 +56,16 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserById(Long id) {
         Optional<User> dbUser = usersRepository.findById(id);
         return dbUser.map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching id in the " +
-                        "database for " + id));
+                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching id in the "
+                        + "database for " + id));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> dbUser = usersRepository.findByUsername(username);
         return dbUser.map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching username in the " +
-                        "database for " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find a matching username in the "
+                        + "database for " + username));
     }
 
     @Override

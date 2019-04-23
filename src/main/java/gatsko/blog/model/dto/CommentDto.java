@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentDto {
     private Long id;
 
     @NotBlank

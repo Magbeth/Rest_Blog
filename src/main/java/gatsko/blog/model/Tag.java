@@ -18,7 +18,7 @@ import java.util.Collection;
 public class Tag implements Serializable {
     @Id
     @GeneratedValue
-    private Long Id;
+    private Long id;
 
     @Column(length = 30, nullable = false, unique = true)
     private String name;
