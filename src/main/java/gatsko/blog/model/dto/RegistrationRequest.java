@@ -15,7 +15,7 @@ public class RegistrationRequest {
     @Size.List({
             @Size(min = 3, message = "Username too short"),
             @Size(max = 25, message = "Username too long")
-    })
+        })
     @NotBlank
     private String username;
 
@@ -31,7 +31,7 @@ public class RegistrationRequest {
     @Size.List({
             @Size(min = 6, message = "Password too short"),
             @Size(max = 80, message = "Password too long")
-    })
+        })
     @NotBlank
     private String password;
 

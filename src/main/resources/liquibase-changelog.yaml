@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: createBlogTables
+      author: uladzislauhatsko
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            #            endDelimiter: \n/\s*\n|\n/\s*$
+            path: classpath:create_blog_tables.sql
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: fillTablesWithInitialData
+      author: uladzislauhatsko
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: classpath:fill_blog_tables_with_data.sql
+            splitStatements: true
+            stripComments: true

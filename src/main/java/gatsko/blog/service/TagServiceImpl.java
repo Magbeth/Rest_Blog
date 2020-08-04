@@ -15,8 +15,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag saveTag(Tag tag) {
-        if (tagRepository.findByName(tag.getName()) == null) {
+        if (!tagRepository.existsByName(tag.getName())) {
             return tagRepository.saveAndFlush(tag);
-        } else return tagRepository.findByName(tag.getName());
+        }
+        return tagRepository.findByName(tag.getName());
     }
 }

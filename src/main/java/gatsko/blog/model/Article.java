@@ -1,18 +1,12 @@
 package gatsko.blog.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import gatsko.blog.model.dto.ArticleDTO;
+import gatsko.blog.model.dto.ArticleDto;
 import gatsko.blog.model.enums.ArticleStatus;
-import gatsko.blog.utils.JsonDateDeserializer;
-import gatsko.blog.utils.JsonDateSerializer;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,11 +54,11 @@ public class Article {
     @JoinColumn(name = "author_id", nullable = false)
     private User user;
 
-    public Article(ArticleDTO articleDTO) {
-        this.title = articleDTO.getTitle();
-        this.fullPostText = articleDTO.getFullPostText();
-        this.tags = articleDTO.getTags();
-        this.status = articleDTO.getStatus();
+    public Article(ArticleDto articleDto) {
+        this.title = articleDto.getTitle();
+        this.fullPostText = articleDto.getFullPostText();
+        this.tags = articleDto.getTags();
+        this.status = articleDto.getStatus();
     }
 
     public boolean isPublic() {

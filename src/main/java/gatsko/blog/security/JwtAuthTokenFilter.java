@@ -44,7 +44,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
+                Long userId = jwtTokenProvider.getUserIdFromJwt(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication =
@@ -53,7 +53,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
         filterChain.doFilter(request, response);

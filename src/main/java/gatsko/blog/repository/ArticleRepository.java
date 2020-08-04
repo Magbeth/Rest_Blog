@@ -21,7 +21,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Page<Article> findAllByStatus(ArticleStatus status, Pageable pageable);
 
-    @Query("SELECT count(a) FROM Article a WHERE :tagCount = (SELECT COUNT(DISTINCT t.id) FROM Article a2 JOIN a2.tags t WHERE LOWER(t.name) in (:tagNames) and a = a2)")
+    @Query("SELECT count(a) FROM Article a WHERE :tagCount = (SELECT COUNT(DISTINCT t.id) "
+            + "FROM Article a2 JOIN a2.tags t WHERE LOWER(t.name) in (:tagNames) and a = a2)")
     Long findArticleCountByTag(@Param("tagNames") Collection<String> tagNames, @Param("tagCount") Long tagCount);
 
     Boolean existsById(Long id);

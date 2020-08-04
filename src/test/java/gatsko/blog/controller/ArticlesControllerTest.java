@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestContext.class, WebConfig.class, JpaConfiguration.class, SecurityConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, JpaConfiguration.class, SecurityConfig.class})
 @WebAppConfiguration
 public class ArticlesControllerTest {
     @Test
@@ -71,7 +71,7 @@ public class ArticlesControllerTest {
     }
 
     @Test
-    @WithUserDetails("TestUser")
+    @WithUserDetails("admin")
     public void getAuthUserArticles() throws Exception {
         mockMvc.perform(get("/my"))
                 .andExpect(status().isOk());
@@ -90,7 +90,7 @@ public class ArticlesControllerTest {
     @WithAnonymousUser
     public void successfulAuthenticationWithAnonymousUser() throws Exception {
 
-        LoginRequest loginRequest = new LoginRequest("TestUser", "111111");
+        LoginRequest loginRequest = new LoginRequest("admin", "000000");
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

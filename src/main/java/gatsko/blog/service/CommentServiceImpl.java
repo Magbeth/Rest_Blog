@@ -22,7 +22,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
 
-    public CommentServiceImpl(UserService userService, CommentRepository commentRepository, ArticleRepository articleRepository) {
+    public CommentServiceImpl(UserService userService, CommentRepository commentRepository,
+                              ArticleRepository articleRepository) {
         this.userService = userService;
         this.commentRepository = commentRepository;
         this.articleRepository = articleRepository;
@@ -46,10 +47,10 @@ public class CommentServiceImpl implements CommentService {
         if (!articleRepository.existsById(articleId)) {
             throw new ResourceNotFoundException("Article with id " + articleId + " doesn't exists");
         }
-        Comment comment = commentRepository.findOne(commentId);
-        if (comment == null) {
+        if (!commentRepository.exists(commentId)) {
             throw new ResourceNotFoundException("Comment with id " + commentId + " doesn't exist");
-        } else return comment;
+        }
+        return commentRepository.findOne(commentId);
     }
 
     @Transactional

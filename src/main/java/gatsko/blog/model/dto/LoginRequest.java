@@ -14,14 +14,14 @@ public class LoginRequest {
     @Size.List({
             @Size(min = 3, message = "Username too short"),
             @Size(max = 25, message = "Username too long")
-    })
+        })
     @NotBlank
     private String username;
 
     @Size.List({
             @Size(min = 6, message = "Password too short"),
             @Size(max = 80, message = "Password too long")
-    })
+        })
     @NotBlank
     private String password;
 }

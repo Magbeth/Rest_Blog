@@ -1,7 +1,7 @@
 package gatsko.blog.service.apiInterface;
 
 import gatsko.blog.model.Article;
-import gatsko.blog.model.dto.ArticleDTO;
+import gatsko.blog.model.dto.ArticleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,12 +24,10 @@ public interface ArticleService {
 
     Long countArticlesWithTag(Collection<String> tags);
 
-//    void setArticleVisibility(Long articleId, boolean hide);
-
     @PreAuthorize("#article.user.username == authentication.name")
     void deleteArticle(Article article);
 
     @PreAuthorize("#article.user.username == authentication.name")
-    Article updateArticle(Article article, ArticleDTO editedArticle);
+    Article updateArticle(Article article, ArticleDto editedArticle);
 
 }

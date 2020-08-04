@@ -35,7 +35,8 @@ public class OnPasswordLinkRequestEventListener implements ApplicationListener<O
         String subject = "Password reset";
         String confirmationUrl
                 = event.getRedirectUrl() + "/auth/resetPassword.html?token=" + token;
-        String message = messageSource.getMessage("Please click on the below link to reset your password. ", null, event.getLocale());
+        String message = messageSource
+                .getMessage("Please click on the below link to reset your password. ", null, event.getLocale());
         String mailBody = message + "http://localhost:8080" + confirmationUrl;
         SimpleMailMessage resetEmail = mailService.constructEmail(subject, mailBody, email);
         mailSender.send(resetEmail);

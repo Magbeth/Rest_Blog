@@ -20,7 +20,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArticleDTO {
+public class ArticleDto {
     private Long id;
     @NotBlank
     private String title;

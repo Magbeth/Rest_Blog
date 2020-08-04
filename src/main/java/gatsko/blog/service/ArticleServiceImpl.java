@@ -3,7 +3,7 @@ package gatsko.blog.service;
 import gatsko.blog.exception.ResourceNotFoundException;
 import gatsko.blog.model.Article;
 import gatsko.blog.model.enums.ArticleStatus;
-import gatsko.blog.model.dto.ArticleDTO;
+import gatsko.blog.model.dto.ArticleDto;
 import gatsko.blog.model.Tag;
 import gatsko.blog.repository.ArticleRepository;
 import gatsko.blog.service.apiInterface.ArticleService;
@@ -45,36 +45,41 @@ public class ArticleServiceImpl implements ArticleService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
             return articleRepository.findAllByStatus(ArticleStatus.PUBLIC, pageRequest);
-        } else return articleRepository.findAll(pageRequest);
+        }
+        return articleRepository.findAll(pageRequest);
     }
 
 
     @Override
     public Article getArticle(Long id) {
-        Article article = articleRepository.findOne(id);
-        if (article == null) {
+        if (!articleRepository.existsById(id)) {
             throw new ResourceNotFoundException("Article with id " + id + " not found");
         }
+
+        Article article = articleRepository.findOne(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken && article.getStatus() != ArticleStatus.PUBLIC) {
             throw new AccessControlException("You have no permission to view this article. Please, Log in");
-        } else return article;
+        }
+
+        return article;
     }
 
     @Override
     @Transactional
     public Article getArticleForReading(Long id) {
-        Article article = articleRepository.findOne(id);
-        if (article == null) {
+        if (!articleRepository.existsById(id)) {
             throw new ResourceNotFoundException("Article with id " + id + " not found");
         }
+
+        Article article = articleRepository.findOne(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken && article.getStatus() != ArticleStatus.PUBLIC) {
             throw new AccessControlException("You have no permission to view this article. Please, Log in");
-        } else {
-            Hibernate.initialize(article.getTags());
-            return article;
         }
+        Hibernate.initialize(article.getTags());
+
+        return article;
     }
 
     @Override
@@ -91,7 +96,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article saveNewArticle(Article newArticle) {
-//        Article newArticle = new Article(article);
         newArticle.setCreatedAt(LocalDateTime.now());
         newArticle.setUser(userService.currentUser());
         if (newArticle.getTags() != null) {
@@ -112,7 +116,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Transactional
     @Override
-    public Article updateArticle(Article article, ArticleDTO editedArticle) {
+    public Article updateArticle(Article article, ArticleDto editedArticle) {
         article.setFullPostText(editedArticle.getFullPostText());
         article.setTitle(editedArticle.getTitle());
         article.setUpdatedAt(LocalDateTime.now());

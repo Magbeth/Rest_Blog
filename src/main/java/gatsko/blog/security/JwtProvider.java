@@ -6,7 +6,6 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
 import java.time.Instant;
 import java.util.Date;
 
@@ -41,7 +40,8 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-    public Long getUserIdFromJWT(String token) {
+
+    public Long getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -58,7 +58,7 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            throw new InvalidTokenRequestException("JWT" + authToken +"Incorrect signature");
+            throw new InvalidTokenRequestException("JWT" + authToken + "Incorrect signature");
         } catch (MalformedJwtException ex) {
             throw new InvalidTokenRequestException("JWT" + authToken + "Malformed jwt token");
         } catch (ExpiredJwtException ex) {

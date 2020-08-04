@@ -39,7 +39,9 @@ public class OnUserRegistrationCompleteEventListener implements ApplicationListe
         String subject = "Registration Confirmation";
         String confirmationUrl
                 = event.getRedirectUrl() + "/registrationConfirm.html?token=" + token;
-        String message = messageSource.getMessage("Thank you for registering. Please click on the below link to activate your account. ", null, event.getLocale());
+        String message = messageSource
+                .getMessage("Thank you for registering. Please click on the below link to activate your account. ",
+                        null, event.getLocale());
         String mailBody = message + "http://localhost:8080/auth" + confirmationUrl;
         SimpleMailMessage email = mailService.constructEmail(subject, mailBody, user.getEmail());
         mailSender.send(email);

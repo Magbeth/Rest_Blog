@@ -31,7 +31,8 @@ public class OnPasswordResetNotificationEventListener implements ApplicationList
     private void sendResetLink(OnPasswordResetNotificationEvent event) {
         String email = event.getEmail();
         String subject = "Password changed";
-        String message = messageSource.getMessage("Your password has been changed. ", null, event.getLocale());
+        String message = messageSource
+                .getMessage("Your password has been changed. ", null, event.getLocale());
         SimpleMailMessage resetEmail = mailService.constructEmail(subject, message, email);
         mailSender.send(resetEmail);
     }

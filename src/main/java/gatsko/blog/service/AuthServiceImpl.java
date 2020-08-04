@@ -60,7 +60,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<Authentication> authenticateUser(LoginRequest loginRequest) {
-        return Optional.ofNullable(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+        return Optional.ofNullable(authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword())));
     }
 
@@ -82,12 +83,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String generateNewTokenForUserEmail(String email) {
-        String token = emailVerificationTokenService.generateNewToken();
         User registeredUser = Optional.ofNullable(userService.findByEmail(email))
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not exists"));
         if (registeredUser.isEnabled()) {
             throw new UserAlreadyActivatedException("User with email " + email + " already activated");
         }
+
+        String token = emailVerificationTokenService.generateNewToken();
         emailVerificationTokenService.createVerificationToken(registeredUser, token);
         return token;
     }

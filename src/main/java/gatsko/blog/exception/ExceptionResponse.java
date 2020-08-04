@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExceptionResponse {
-//    private int status;
     private String message;
-//    private long timeStamp;
 }
